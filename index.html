@@ -1,0 +1,3287 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>CS Interio — Luxury Interior Design</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,700;1,400;1,500&family=DM+Sans:wght@200;300;400;500&family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&display=swap" rel="stylesheet">
+<style>
+/* ═══════════════════════════════════════
+   RESET & BASE
+═══════════════════════════════════════ */
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+:root{
+  --black:#080705;
+  --dark:#10100e;
+  --panel:#161512;
+  --gold:#c9a84c;
+  --gold2:#e8c96d;
+  --cream:#f2ebe0;
+  --warm:#8b6420;
+  --muted:#7a6e5f;
+  --nav-h:72px;
+}
+html{scroll-behavior:smooth;overflow-x:hidden;}
+body{
+  background:var(--black);
+  color:var(--cream);
+  font-family:'DM Sans',sans-serif;
+  font-weight:300;
+  overflow-x:hidden;
+  cursor:none;
+}
+img{display:block;max-width:100%;}
+a,button{cursor:none;}
+
+/* cursor now defined in enhanced block above */
+@media(hover:none),(max-width:768px){}
+
+/* ═══════════════════════════════════════
+   NOISE TEXTURE
+═══════════════════════════════════════ */
+body::after{
+  content:'';position:fixed;inset:0;z-index:2;pointer-events:none;opacity:.025;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size:180px 180px;
+}
+
+/* ═══════════════════════════════════════
+   PARTICLE CANVAS
+═══════════════════════════════════════ */
+#particleCanvas{
+  position:fixed;inset:0;z-index:1;
+  pointer-events:none;opacity:.55;
+}
+
+/* ═══════════════════════════════════════
+   ENHANCED CURSOR
+═══════════════════════════════════════ */
+#cur{
+  position:fixed;width:8px;height:8px;
+  background:var(--gold);border-radius:50%;
+  pointer-events:none;z-index:9999;
+  left:-20px;top:-20px;
+  transform:translate(-50%,-50%);
+  transition:width .2s,height .2s,background .2s;
+  mix-blend-mode:difference;
+}
+#cur-ring{
+  position:fixed;width:36px;height:36px;
+  border:1px solid rgba(201,168,76,.6);
+  border-radius:50%;pointer-events:none;z-index:9998;
+  left:-40px;top:-40px;
+  transform:translate(-50%,-50%);
+  transition:width .35s cubic-bezier(.25,.46,.45,.94),
+             height .35s cubic-bezier(.25,.46,.45,.94),
+             border-color .3s,opacity .3s;
+}
+#cur-trail{
+  position:fixed;
+  pointer-events:none;z-index:9997;
+  left:-10px;top:-10px;
+  transform:translate(-50%,-50%);
+  width:6px;height:6px;
+  border-radius:50%;
+  background:rgba(201,168,76,.3);
+  transition:left .12s ease,top .12s ease;
+}
+body.hovering #cur{width:0px;height:0px;opacity:0;}
+body.hovering #cur-ring{width:52px;height:52px;border-color:var(--gold);border-width:1.5px;}
+body.clicking #cur-ring{transform:translate(-50%,-50%) scale(.8);}
+
+/* ═══════════════════════════════════════
+   GLOBAL MAGNETIC + SHIMMER VARS
+═══════════════════════════════════════ */
+:root{
+  --shimmer-dur:2.8s;
+  --gold-glow:0 0 40px rgba(201,168,76,.25),0 0 80px rgba(201,168,76,.1);
+}
+
+/* ═══════════════════════════════════════
+   ENHANCED SCROLL REVEAL — more variety
+═══════════════════════════════════════ */
+.rv{opacity:0;transform:translateY(48px) scale(.97);transition:opacity .85s cubic-bezier(.16,1,.3,1),transform .85s cubic-bezier(.16,1,.3,1);}
+.rl{opacity:0;transform:translateX(-48px);transition:opacity .85s cubic-bezier(.16,1,.3,1),transform .85s cubic-bezier(.16,1,.3,1);}
+.rr{opacity:0;transform:translateX(48px);transition:opacity .85s cubic-bezier(.16,1,.3,1),transform .85s cubic-bezier(.16,1,.3,1);}
+.rs{opacity:0;transform:scale(.92);transition:opacity .9s ease,transform .9s ease;}
+.rv.in,.rl.in,.rr.in,.rs.in{opacity:1;transform:none;}
+
+/* ═══════════════════════════════════════
+   HERO ENHANCEMENTS
+═══════════════════════════════════════ */
+
+/* Animated gradient orbs behind hero */
+.hero-orb{
+  position:absolute;border-radius:50%;
+  pointer-events:none;z-index:1;filter:blur(80px);
+  animation:orbFloat var(--dur,12s) ease-in-out infinite alternate;
+}
+.hero-orb-1{
+  width:600px;height:600px;
+  background:radial-gradient(circle,rgba(201,168,76,.12) 0%,transparent 70%);
+  top:-10%;left:-15%;
+  --dur:14s;
+}
+.hero-orb-2{
+  width:400px;height:400px;
+  background:radial-gradient(circle,rgba(201,168,76,.07) 0%,transparent 70%);
+  bottom:10%;right:5%;
+  --dur:10s;animation-delay:-4s;
+}
+.hero-orb-3{
+  width:300px;height:300px;
+  background:radial-gradient(circle,rgba(139,100,32,.1) 0%,transparent 70%);
+  top:40%;left:40%;
+  --dur:16s;animation-delay:-7s;
+}
+@keyframes orbFloat{
+  from{transform:translate(0,0) scale(1);}
+  to{transform:translate(30px,20px) scale(1.12);}
+}
+
+/* Diagonal line decorations */
+.hero-deco{
+  position:absolute;z-index:2;pointer-events:none;
+  right:clamp(2rem,8vw,8rem);bottom:clamp(8rem,15vw,14rem);
+  opacity:0;animation:fadeIn 1s 2s ease forwards;
+}
+.hero-deco-line{
+  width:1px;height:clamp(60px,8vh,90px);
+  background:linear-gradient(to bottom,transparent,rgba(201,168,76,.5),transparent);
+  margin:0 auto 1rem;
+  position:relative;overflow:hidden;
+}
+.hero-deco-line::after{
+  content:'';position:absolute;top:-100%;width:100%;height:100%;
+  background:var(--gold);animation:lineFlow 2.5s ease-in-out infinite;
+}
+@keyframes lineFlow{to{top:200%;}}
+.hero-deco-cross{
+  width:20px;height:20px;position:relative;margin:0 auto;
+}
+.hero-deco-cross::before,.hero-deco-cross::after{
+  content:'';position:absolute;background:rgba(201,168,76,.4);
+  top:50%;left:0;width:100%;height:1px;transform:translateY(-50%);
+}
+.hero-deco-cross::after{transform:rotate(90deg) translateX(-50%);width:1px;height:100%;top:0;left:50%;}
+
+/* Animated hero badge */
+.hero-badge-wrap{
+  position:absolute;right:clamp(3rem,6vw,6rem);
+  top:50%;transform:translateY(-50%);
+  z-index:10;
+  opacity:0;animation:fadeIn 1s 1.5s ease forwards;
+}
+.hero-badge{
+  width:clamp(110px,12vw,140px);height:clamp(110px,12vw,140px);
+  border-radius:50%;
+  border:1px solid rgba(201,168,76,.3);
+  display:flex;align-items:center;justify-content:center;
+  position:relative;
+  animation:rotateBadge 20s linear infinite;
+}
+.hero-badge-inner{
+  width:78%;height:78%;border-radius:50%;
+  background:rgba(201,168,76,.07);
+  border:1px solid rgba(201,168,76,.2);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  text-align:center;
+  animation:rotateBadge 20s linear infinite reverse;
+}
+.hero-badge-num{
+  font-family:'Playfair Display',serif;
+  font-size:clamp(1.4rem,2.5vw,1.8rem);font-weight:700;
+  color:var(--gold);line-height:1;
+}
+.hero-badge-txt{
+  font-size:clamp(.5rem,.65vw,.62rem);
+  letter-spacing:.12em;text-transform:uppercase;
+  color:rgba(242,235,224,.55);margin-top:.25rem;
+}
+/* Rotating text around badge */
+.hero-badge-ring{
+  position:absolute;inset:0;
+}
+.hero-badge-ring svg{
+  width:100%;height:100%;
+  animation:rotateBadge 30s linear infinite;
+}
+.hero-badge-ring textPath{
+  font-size:7.5px;letter-spacing:3px;
+  fill:rgba(201,168,76,.55);
+  text-transform:uppercase;
+  font-family:'DM Sans',sans-serif;
+}
+@keyframes rotateBadge{from{transform:rotate(0deg);}to{transform:rotate(360deg);}}
+
+/* ═══════════════════════════════════════
+   TICKER ENHANCED
+═══════════════════════════════════════ */
+.ticker{
+  padding:0;overflow:hidden;background:var(--gold);
+  position:relative;
+}
+.ticker-inner{display:flex;animation:slide 28s linear infinite;white-space:nowrap;}
+.ti{
+  font-family:'Cormorant Garamond',serif;font-style:italic;
+  font-size:clamp(.95rem,1.3vw,1.1rem);color:var(--black);
+  padding:.9rem 2rem;display:flex;align-items:center;gap:2rem;
+  font-weight:400;
+}
+.ti::after{content:'✦';font-style:normal;font-size:.65rem;}
+
+/* ═══════════════════════════════════════
+   SERVICES BENTO ENHANCED
+═══════════════════════════════════════ */
+.sc{
+  position:relative;overflow:hidden;background:var(--panel);
+  /* 3D prep */
+  transform-style:preserve-3d;
+  transition:box-shadow .4s;
+}
+.sc:hover{
+  box-shadow:0 20px 60px rgba(0,0,0,.5),0 0 0 1px rgba(201,168,76,.2);
+  z-index:2;
+}
+/* Shimmer overlay on service cards */
+.sc::after{
+  content:'';position:absolute;inset:0;
+  background:linear-gradient(105deg,transparent 30%,rgba(201,168,76,.06) 50%,transparent 70%);
+  transform:translateX(-100%);
+  transition:transform .7s ease;
+  z-index:3;pointer-events:none;
+}
+.sc:hover::after{transform:translateX(100%);}
+
+/* Gold border reveal on hover */
+.sc-border{
+  position:absolute;inset:0;z-index:4;pointer-events:none;
+}
+.sc-border::before,.sc-border::after{
+  content:'';position:absolute;
+  background:var(--gold);
+  transition:all .5s cubic-bezier(.16,1,.3,1);
+}
+/* top edge */
+.sc-border::before{top:0;left:0;height:1px;width:0;}
+/* right edge */
+.sc-border::after{top:0;right:0;width:1px;height:0;}
+.sc:hover .sc-border::before{width:100%;}
+.sc:hover .sc-border::after{height:100%;}
+
+/* ═══════════════════════════════════════
+   ABOUT SECTION ENHANCED
+═══════════════════════════════════════ */
+.about-sec{position:relative;}
+.about-sec::before{
+  content:'';position:absolute;
+  right:0;top:0;bottom:0;width:40%;
+  background:linear-gradient(to left,rgba(201,168,76,.025),transparent);
+  pointer-events:none;z-index:0;
+}
+
+/* ═══════════════════════════════════════
+   PROCESS ENHANCED — animated connector
+═══════════════════════════════════════ */
+.process-grid::before{
+  content:'';position:absolute;
+  top:24px;left:12.5%;right:12.5%;
+  height:1px;
+  background:linear-gradient(to right,transparent,rgba(201,168,76,.3),rgba(201,168,76,.3),rgba(201,168,76,.3),transparent);
+  /* animated fill */
+  transform-origin:left;
+  transform:scaleX(0);
+  transition:transform 1.5s cubic-bezier(.16,1,.3,1) .3s;
+}
+.process-grid.line-in::before{transform:scaleX(1);}
+
+/* Process step hover glow */
+.ps-num{transition:background .35s,box-shadow .35s,transform .35s;}
+.ps:hover .ps-num{
+  background:var(--gold);color:var(--black);
+  box-shadow:0 0 0 8px rgba(201,168,76,.08),0 0 30px rgba(201,168,76,.3);
+  transform:scale(1.1);
+}
+
+/* ═══════════════════════════════════════
+   GALLERY ENHANCED — magnetic hover
+═══════════════════════════════════════ */
+.gi{
+  overflow:hidden;position:relative;background:var(--panel);
+  transition:box-shadow .4s;
+}
+.gi:hover{
+  box-shadow:inset 0 0 0 1px rgba(201,168,76,.35);
+  z-index:2;
+}
+/* Zoom-out on sibling hover */
+.mosaic:hover .gi:not(:hover) img{
+  filter:brightness(.55) saturate(.6);
+  transform:scale(.99);
+}
+.mosaic:hover .gi:not(:hover){opacity:.7;}
+.gi{transition:opacity .4s;}
+
+/* ═══════════════════════════════════════
+   TESTIMONIALS — floating cards
+═══════════════════════════════════════ */
+.tc{
+  transition:border-color .35s,transform .4s cubic-bezier(.25,.46,.45,.94),box-shadow .4s;
+}
+.tc:hover{
+  transform:translateY(-6px) scale(1.01);
+  box-shadow:0 20px 50px rgba(0,0,0,.35),0 0 0 1px rgba(201,168,76,.15);
+}
+
+/* ═══════════════════════════════════════
+   GOLD LINE SECTION DIVIDERS
+═══════════════════════════════════════ */
+.sec-divider{
+  height:1px;
+  background:linear-gradient(to right,transparent,rgba(201,168,76,.25) 25%,rgba(201,168,76,.4) 50%,rgba(201,168,76,.25) 75%,transparent);
+  position:relative;overflow:hidden;
+}
+.sec-divider::after{
+  content:'';position:absolute;top:0;left:-20%;
+  width:40%;height:100%;
+  background:linear-gradient(to right,transparent,rgba(201,168,76,.9),transparent);
+  animation:dividerSweep 4s ease-in-out infinite;
+}
+@keyframes dividerSweep{
+  0%{left:-40%;}
+  100%{left:120%;}
+}
+
+/* ═══════════════════════════════════════
+   STATS BAR ENHANCED
+═══════════════════════════════════════ */
+.hs{
+  position:relative;overflow:hidden;
+  transition:background .35s;
+}
+.hs:hover{background:rgba(201,168,76,.05);}
+.hs::after{
+  content:'';position:absolute;
+  bottom:0;left:50%;transform:translateX(-50%);
+  width:0;height:1px;background:var(--gold);
+  transition:width .4s ease;
+}
+.hs:hover::after{width:60%;}
+
+/* ═══════════════════════════════════════
+   SECTION BG GRADIENTS — depth layers
+═══════════════════════════════════════ */
+.services{
+  background:var(--black);
+  position:relative;
+}
+.services::after{
+  content:'';position:absolute;
+  bottom:0;left:0;right:0;height:200px;
+  background:linear-gradient(to bottom,transparent,rgba(201,168,76,.02));
+  pointer-events:none;
+}
+
+/* Process radial glow — bigger */
+.process-sec::before{
+  content:'';position:absolute;inset:0;
+  background:
+    radial-gradient(ellipse at 50% 100%,rgba(201,168,76,.04) 0%,transparent 60%),
+    radial-gradient(ellipse at 20% 50%,rgba(201,168,76,.025) 0%,transparent 50%);
+  pointer-events:none;
+}
+
+/* Contact section animated bg */
+.contact-sec{overflow:hidden;}
+.contact-sec::after{
+  content:'';position:absolute;
+  bottom:-20%;right:-10%;
+  width:500px;height:500px;border-radius:50%;
+  background:radial-gradient(circle,rgba(201,168,76,.04),transparent 70%);
+  pointer-events:none;
+  animation:orbFloat 15s ease-in-out infinite alternate;
+}
+
+/* ═══════════════════════════════════════
+   BAND / PHILOSOPHY ENHANCED
+═══════════════════════════════════════ */
+.band::after{
+  content:'';position:absolute;inset:0;z-index:1;
+  background:
+    repeating-linear-gradient(
+      90deg,
+      transparent,
+      transparent 80px,
+      rgba(201,168,76,.012) 80px,
+      rgba(201,168,76,.012) 81px
+    );
+  pointer-events:none;
+}
+
+/* ═══════════════════════════════════════
+   ENHANCED CHIPS
+═══════════════════════════════════════ */
+.chip{
+  transition:all .3s cubic-bezier(.25,.46,.45,.94);
+}
+.chip:hover{
+  background:rgba(201,168,76,.1);
+  border-color:var(--gold);
+  transform:translateY(-2px);
+}
+
+/* ═══════════════════════════════════════
+   MAGNETIC BUTTON EFFECT (JS-driven)
+═══════════════════════════════════════ */
+.mag-btn{transition:transform .4s cubic-bezier(.23,1,.32,1);}
+
+/* ═══════════════════════════════════════
+   ANIMATED SECTION HEADINGS — char reveal
+═══════════════════════════════════════ */
+.char-reveal .char{
+  display:inline-block;
+  opacity:0;transform:translateY(110%);
+  transition:opacity .5s ease,transform .5s cubic-bezier(.16,1,.3,1);
+}
+.char-reveal.in .char{opacity:1;transform:translateY(0);}
+
+/* ═══════════════════════════════════════
+   FLOATING GOLD PARTICLES (canvas backup)
+═══════════════════════════════════════ */
+.gold-particle{
+  position:fixed;pointer-events:none;z-index:1;
+  border-radius:50%;background:var(--gold);
+  opacity:0;
+  animation:particleFall var(--dur,8s) linear var(--delay,0s) infinite;
+}
+@keyframes particleFall{
+  0%{opacity:0;transform:translateY(-20px) scale(0);}
+  10%{opacity:.6;}
+  90%{opacity:.1;}
+  100%{opacity:0;transform:translateY(100vh) scale(.5);}
+}
+
+/* ═══════════════════════════════════════
+   ENHANCED FORM INPUTS — focus glow
+═══════════════════════════════════════ */
+.fg input:focus,.fg select:focus,.fg textarea:focus{
+  border-color:var(--gold);
+  background:rgba(201,168,76,.04);
+  box-shadow:0 0 0 1px rgba(201,168,76,.2),0 4px 20px rgba(201,168,76,.08);
+}
+
+/* ═══════════════════════════════════════
+   PRELOADER
+═══════════════════════════════════════ */
+#preloader{
+  position:fixed;inset:0;z-index:10000;
+  background:var(--black);
+  display:flex;flex-direction:column;
+  align-items:center;justify-content:center;
+  gap:2rem;
+  transition:opacity .6s ease,transform .6s ease;
+}
+#preloader.out{opacity:0;transform:scale(1.04);pointer-events:none;}
+.pl-logo{
+  font-family:'Playfair Display',serif;
+  font-size:clamp(2.5rem,5vw,4rem);font-weight:700;
+  color:var(--cream);letter-spacing:.05em;
+  opacity:0;animation:fadeUp .8s .2s ease forwards;
+}
+.pl-logo span{color:var(--gold);}
+.pl-bar-wrap{
+  width:clamp(160px,30vw,240px);height:1px;
+  background:rgba(201,168,76,.15);
+  overflow:hidden;
+  opacity:0;animation:fadeIn .6s .5s ease forwards;
+}
+.pl-bar{
+  height:100%;width:0%;background:var(--gold);
+  transition:width .05s linear;
+}
+.pl-pct{
+  font-size:.75rem;letter-spacing:.2em;text-transform:uppercase;
+  color:var(--muted);
+  opacity:0;animation:fadeIn .6s .6s ease forwards;
+}
+
+/* ═══════════════════════════════════════
+   FOOTER ENHANCED
+═══════════════════════════════════════ */
+footer{position:relative;overflow:hidden;}
+footer::before{
+  content:'';position:absolute;
+  top:-50%;left:-10%;
+  width:500px;height:500px;border-radius:50%;
+  background:radial-gradient(circle,rgba(201,168,76,.025),transparent 70%);
+  pointer-events:none;
+}
+
+/* ═══════════════════════════════════════
+   SECTION NUMBER WATERMARKS
+═══════════════════════════════════════ */
+.sec-watermark{
+  position:absolute;
+  font-family:'Playfair Display',serif;
+  font-size:clamp(6rem,15vw,18rem);
+  font-weight:700;line-height:1;
+  color:rgba(201,168,76,.022);
+  pointer-events:none;
+  z-index:0;
+  user-select:none;
+}
+
+/* ═══════════════════════════════════════
+   GOLD GLINT ANIMATION for sec-tag
+═══════════════════════════════════════ */
+.sec-tag{
+  position:relative;overflow:hidden;
+}
+.sec-tag::after{
+  content:'';
+  position:absolute;top:0;left:-60%;
+  width:50%;height:100%;
+  background:linear-gradient(to right,transparent,rgba(255,255,255,.25),transparent);
+  animation:tagGlint 4s ease-in-out infinite;
+}
+@keyframes tagGlint{
+  0%,70%{left:-60%;}
+  85%{left:120%;}
+  100%{left:120%;}
+}
+
+/* ═══════════════════════════════════════
+   NUMBERS — slot machine effect
+═══════════════════════════════════════ */
+.slot-num{
+  display:inline-block;overflow:hidden;
+  line-height:1;vertical-align:top;
+}
+
+/* ═══════════════════════════════════════
+   HOVER CARD SHINE
+═══════════════════════════════════════ */
+.shine-card{position:relative;overflow:hidden;}
+.shine-card::before{
+  content:'';position:absolute;inset:0;
+  background:linear-gradient(
+    105deg,
+    transparent 30%,
+    rgba(255,255,255,.05) 50%,
+    transparent 70%
+  );
+  transform:translateX(-100%);
+  transition:transform .6s ease;
+  z-index:5;pointer-events:none;
+}
+.shine-card:hover::before{transform:translateX(100%);}
+
+/* Process cards get shine */
+.ps{position:relative;}
+
+/* ═══════════════════════════════════════
+   ANIMATED GRADIENT BORDER — contact info
+═══════════════════════════════════════ */
+.ci-icon{
+  background:
+    linear-gradient(var(--dark),var(--dark)) padding-box,
+    linear-gradient(135deg,rgba(201,168,76,.5),rgba(201,168,76,.1),rgba(201,168,76,.5)) border-box;
+  border:1px solid transparent!important;
+  transition:box-shadow .3s;
+}
+.ci:hover .ci-icon{
+  box-shadow:0 0 20px rgba(201,168,76,.15);
+}
+
+/* ═══════════════════════════════════════
+   SCROLL PROGRESS BAR
+═══════════════════════════════════════ */
+#scrollProgress{
+  position:fixed;top:0;left:0;
+  height:2px;width:0%;z-index:700;
+  background:linear-gradient(to right,var(--warm),var(--gold),var(--gold2));
+  transition:width .1s linear;
+  box-shadow:0 0 8px rgba(201,168,76,.5);
+}
+
+/* ═══════════════════════════════════════
+   BACK TO TOP BUTTON
+═══════════════════════════════════════ */
+#backTop{
+  position:fixed;bottom:2rem;left:2rem;
+  width:44px;height:44px;
+  border:1px solid rgba(201,168,76,.3);
+  background:rgba(8,7,5,.85);
+  backdrop-filter:blur(10px);
+  display:flex;align-items:center;justify-content:center;
+  color:var(--gold);font-size:1.2rem;
+  cursor:none;z-index:799;
+  opacity:0;transform:translateY(10px);
+  transition:opacity .35s,transform .35s,border-color .3s,background .3s;
+  text-decoration:none;
+}
+#backTop.show{opacity:1;transform:translateY(0);}
+#backTop:hover{border-color:var(--gold);background:rgba(201,168,76,.1);}
+
+/* ═══════════════════════════════════════
+   HERO ANIMATED HIGHLIGHT TEXT
+═══════════════════════════════════════ */
+.hero-highlight{
+  position:relative;display:inline-block;
+}
+.hero-highlight::after{
+  content:'';position:absolute;
+  bottom:.05em;left:0;
+  width:100%;height:.06em;
+  background:var(--gold);
+  transform:scaleX(0);transform-origin:left;
+  animation:underlineReveal .8s 1.8s cubic-bezier(.16,1,.3,1) forwards;
+}
+@keyframes underlineReveal{to{transform:scaleX(1);}}
+
+/* ═══════════════════════════════════════
+   SECTION TRANSITION CLIPS
+═══════════════════════════════════════ */
+.clip-top{
+  clip-path:polygon(0 4%, 100% 0, 100% 100%, 0 100%);
+  margin-top:-2%;
+}
+.clip-bottom{
+  clip-path:polygon(0 0, 100% 0, 100% 96%, 0 100%);
+  padding-bottom:calc(clamp(4rem,8vw,9rem) + 3%);
+}
+
+/* ═══════════════════════════════════════
+   RESPONSIVE ENHANCEMENTS
+═══════════════════════════════════════ */
+@media(max-width:768px){
+  #particleCanvas{display:none;}
+  .hero-badge-wrap{display:none;}
+  .hero-deco{display:none;}
+}
+@media(hover:none),(max-width:768px){
+  #cur,#cur-ring,#cur-trail{display:none;}
+  body,a,button{cursor:auto;}
+}
+
+
+/* ═══════════════════════════════════════
+   NAVIGATION
+═══════════════════════════════════════ */
+nav{
+  position:fixed;top:0;left:0;right:0;z-index:600;
+  height:var(--nav-h);
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 clamp(1.2rem,4vw,4rem);
+  transition:background .4s,backdrop-filter .4s,border-color .4s;
+}
+nav.scrolled{
+  background:rgba(8,7,5,.94);
+  backdrop-filter:blur(18px);
+  border-bottom:1px solid rgba(201,168,76,.12);
+}
+.logo{
+  font-family:'Playfair Display',serif;
+  font-size:clamp(1.3rem,2.5vw,1.7rem);
+  font-weight:700;text-decoration:none;
+  color:var(--cream);
+  display:flex;align-items:center;gap:.15em;
+  white-space:nowrap;
+  flex-shrink:0;
+}
+.logo-cs{color:var(--gold);}
+.logo-dot{
+  width:5px;height:5px;background:var(--gold);
+  border-radius:50%;margin:0 5px;
+  animation:blink 2s infinite;
+}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
+
+.nav-links{display:flex;align-items:center;gap:clamp(1.2rem,2vw,2.5rem);list-style:none;}
+.nav-links a{
+  color:rgba(242,235,224,.65);text-decoration:none;
+  font-size:.8rem;letter-spacing:.14em;text-transform:uppercase;
+  font-weight:400;transition:color .3s;position:relative;
+}
+.nav-links a::after{
+  content:'';position:absolute;bottom:-5px;left:0;right:0;
+  height:1px;background:var(--gold);
+  transform:scaleX(0);transform-origin:right;
+  transition:transform .35s ease;
+}
+.nav-links a:hover{color:var(--gold);}
+.nav-links a:hover::after{transform:scaleX(1);transform-origin:left;}
+.nav-cta{
+  background:transparent!important;
+  border:1.5px solid var(--gold)!important;
+  color:var(--gold)!important;
+  padding:.5rem 1.4rem!important;
+  transition:background .35s,color .35s!important;
+}
+.nav-cta::after{display:none!important;}
+.nav-cta:hover{background:var(--gold)!important;color:var(--black)!important;}
+
+/* Hamburger */
+.hamburger{
+  display:none;flex-direction:column;gap:5px;
+  background:none;border:none;padding:4px;
+}
+.hamburger span{
+  display:block;width:24px;height:1.5px;
+  background:var(--cream);transition:all .35s;
+}
+.hamburger.open span:nth-child(1){transform:rotate(45deg) translate(4.5px,4.5px);}
+.hamburger.open span:nth-child(2){opacity:0;}
+.hamburger.open span:nth-child(3){transform:rotate(-45deg) translate(4.5px,-4.5px);}
+
+/* Mobile nav drawer */
+.mobile-nav{
+  position:fixed;top:var(--nav-h);left:0;right:0;bottom:0;
+  background:rgba(8,7,5,.98);backdrop-filter:blur(20px);
+  z-index:590;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2.5rem;
+  transform:translateX(100%);transition:transform .4s ease;
+}
+.mobile-nav.open{transform:translateX(0);}
+.mobile-nav a{
+  font-family:'Playfair Display',serif;font-size:2rem;
+  color:var(--cream);text-decoration:none;
+  transition:color .3s;
+}
+.mobile-nav a:hover{color:var(--gold);}
+.mobile-nav .m-cta{
+  margin-top:.5rem;border:1px solid var(--gold);
+  color:var(--gold)!important;
+  padding:.8rem 2.5rem;font-family:'DM Sans',sans-serif;
+  font-size:.85rem;letter-spacing:.15em;text-transform:uppercase;
+}
+
+/* ═══════════════════════════════════════
+   HERO — FIXED VISIBILITY
+═══════════════════════════════════════ */
+.hero{
+  position:relative;
+  min-height:100svh; /* svh = small viewport height, better mobile */
+  display:flex;align-items:center; /* vertically center content */
+  overflow:hidden;
+  padding-top:var(--nav-h);
+}
+
+/* Background image */
+.hero-bg{
+  position:absolute;inset:0;z-index:0;
+}
+.hero-bg img{
+  width:100%;height:100%;object-fit:cover;
+  transform:scale(1.06);
+  animation:slowzoom 18s ease-out forwards;
+}
+@keyframes slowzoom{to{transform:scale(1);}}
+
+/* Multi-layer overlay — ensures text ALWAYS readable */
+.hero-overlay{
+  position:absolute;inset:0;z-index:1;
+  /* Strong left panel for text, lighter right */
+  background:
+    linear-gradient(105deg,
+      rgba(8,7,5,.92) 0%,
+      rgba(8,7,5,.82) 40%,
+      rgba(8,7,5,.45) 65%,
+      rgba(8,7,5,.18) 100%
+    ),
+    linear-gradient(to top,
+      rgba(8,7,5,.85) 0%,
+      rgba(8,7,5,.25) 50%,
+      transparent 100%
+    );
+}
+
+/* Content */
+.hero-content{
+  position:relative;z-index:10;
+  width:100%;
+  padding:3rem clamp(1.2rem,5vw,5rem) clamp(7rem,14vh,10rem);
+  max-width:860px;
+}
+
+.hero-tag{
+  display:inline-flex;align-items:center;gap:.7rem;
+  border:1px solid rgba(201,168,76,.45);
+  background:rgba(201,168,76,.08);
+  padding:.45rem 1.1rem;
+  margin-bottom:1.8rem;
+  font-size:clamp(.62rem,.85vw,.75rem);
+  letter-spacing:.22em;text-transform:uppercase;color:var(--gold);
+  opacity:0;animation:fadeUp .7s .25s ease forwards;
+}
+.hero-tag-dot{width:5px;height:5px;background:var(--gold);border-radius:50%;animation:blink 1.5s infinite;}
+
+h1.hero-title{
+  font-family:'Playfair Display',serif;
+  font-size:clamp(2.8rem,7vw,7rem);
+  line-height:1.05;font-weight:700;
+  margin-bottom:1.6rem;
+  /* no overflow:hidden so lines don't clip on small screens */
+}
+.hero-line{
+  display:block;
+  opacity:0;transform:translateY(28px);
+  animation:fadeUp .85s ease forwards;
+  /* solid background text-shadow for legibility on any bg */
+  text-shadow:0 2px 30px rgba(8,7,5,.6);
+}
+.hero-line:nth-child(1){animation-delay:.4s;}
+.hero-line:nth-child(2){animation-delay:.6s;}
+.hero-line:nth-child(3){animation-delay:.8s;}
+.hero-line-outline{
+  color:transparent;
+  -webkit-text-stroke:1.5px rgba(242,235,224,.5);
+  text-shadow:none;
+}
+.hero-line em{font-style:italic;color:var(--gold);text-shadow:0 0 40px rgba(201,168,76,.3);}
+
+@keyframes fadeUp{from{opacity:0;transform:translateY(28px);}to{opacity:1;transform:translateY(0);}}
+
+.hero-sub{
+  font-size:clamp(.88rem,1.3vw,1rem);
+  color:rgba(242,235,224,.82); /* increased opacity for readability */
+  line-height:1.85;
+  max-width:460px;
+  margin-bottom:2.5rem;
+  opacity:0;animation:fadeUp .8s 1s ease forwards;
+  /* subtle backdrop for text */
+  background:rgba(8,7,5,.25);
+  backdrop-filter:blur(2px);
+  padding:.4rem 0;
+  border-radius:2px;
+}
+
+.hero-btns{
+  display:flex;gap:1.2rem;align-items:center;flex-wrap:wrap;
+  opacity:0;animation:fadeUp .8s 1.2s ease forwards;
+}
+.btn-gold{
+  position:relative;overflow:hidden;
+  background:var(--gold);color:var(--black);
+  padding:clamp(.85rem,1.5vw,1.1rem) clamp(1.5rem,3vw,2.8rem);
+  font-family:'DM Sans',sans-serif;
+  font-size:clamp(.75rem,.9vw,.85rem);
+  letter-spacing:.15em;text-transform:uppercase;font-weight:500;
+  text-decoration:none;border:none;border-radius:1px;
+  transition:color .35s;
+  display:inline-block;
+}
+.btn-gold::before{
+  content:'';position:absolute;inset:0;
+  background:var(--gold2);
+  transform:translateX(-101%);transition:transform .4s ease;z-index:0;
+}
+.btn-gold:hover::before{transform:translateX(0);}
+.btn-gold span{position:relative;z-index:1;}
+.btn-line{
+  color:rgba(242,235,224,.9);text-decoration:none;
+  font-size:clamp(.72rem,.9vw,.82rem);letter-spacing:.15em;
+  text-transform:uppercase;
+  display:inline-flex;align-items:center;gap:.8rem;
+  transition:gap .3s,color .3s;
+}
+.btn-line-bar{display:block;width:28px;height:1px;background:currentColor;transition:width .3s;}
+.btn-line:hover{color:var(--gold);gap:1.2rem;}
+.btn-line:hover .btn-line-bar{width:48px;}
+
+/* Stats bar at bottom of hero */
+.hero-stats{
+  position:absolute;bottom:0;left:0;right:0;z-index:10;
+  display:grid;grid-template-columns:repeat(4,1fr);
+  background:rgba(8,7,5,.72);
+  backdrop-filter:blur(14px);
+  border-top:1px solid rgba(201,168,76,.18);
+  opacity:0;animation:fadeIn 1s 1.6s ease forwards;
+}
+@keyframes fadeIn{from{opacity:0;}to{opacity:1;}}
+.hs{
+  padding:clamp(1rem,2vw,1.6rem) clamp(.8rem,2vw,2rem);
+  text-align:center;
+  border-right:1px solid rgba(201,168,76,.1);
+}
+.hs:last-child{border-right:none;}
+.hs-num{
+  font-family:'Playfair Display',serif;
+  font-size:clamp(1.4rem,3vw,2.2rem);
+  font-weight:700;color:var(--gold);line-height:1;
+}
+.hs-lbl{
+  font-size:clamp(.6rem,.75vw,.72rem);
+  letter-spacing:.12em;text-transform:uppercase;
+  color:rgba(242,235,224,.45);margin-top:.3rem;
+}
+
+/* Scroll indicator */
+.hero-scroll-hint{
+  position:absolute;right:clamp(1.2rem,3vw,3.5rem);
+  bottom:clamp(6rem,12vw,9rem);z-index:10;
+  display:flex;flex-direction:column;align-items:center;gap:.7rem;
+  opacity:0;animation:fadeIn .8s 1.8s ease forwards;
+}
+.scroll-bar{width:1px;height:70px;background:linear-gradient(to bottom,var(--gold),transparent);overflow:hidden;position:relative;}
+.scroll-bar::after{
+  content:'';position:absolute;top:-100%;left:0;width:100%;height:100%;
+  background:var(--gold);animation:scrollAnim 2s ease-in-out infinite;
+}
+@keyframes scrollAnim{to{top:200%;}}
+.scroll-label{font-size:.6rem;letter-spacing:.3em;text-transform:uppercase;color:var(--muted);writing-mode:vertical-rl;}
+
+/* ═══════════════════════════════════════
+   TICKER
+═══════════════════════════════════════ */
+.ticker{padding:1.1rem 0;overflow:hidden;background:var(--gold);}
+.ticker-inner{display:flex;animation:slide 28s linear infinite;white-space:nowrap;}
+.ti{
+  font-family:'Playfair Display',serif;font-style:italic;
+  font-size:clamp(.9rem,1.2vw,1.05rem);color:var(--black);
+  padding:0 2rem;display:flex;align-items:center;gap:2rem;
+}
+.ti::after{content:'✦';font-style:normal;font-size:.65rem;}
+@keyframes slide{from{transform:translateX(0);}to{transform:translateX(-50%);}}
+
+/* ═══════════════════════════════════════
+   SHARED SECTION STYLES
+═══════════════════════════════════════ */
+.sec{padding:clamp(4rem,8vw,9rem) clamp(1.2rem,5vw,5rem);}
+.sec-tag{
+  display:inline-flex;align-items:center;gap:.6rem;
+  font-size:.72rem;letter-spacing:.25em;text-transform:uppercase;
+  color:var(--gold);margin-bottom:1.1rem;
+}
+.sec-tag::before{content:'';width:28px;height:1px;background:var(--gold);}
+.sec-h2{
+  font-family:'Playfair Display',serif;
+  font-size:clamp(2rem,4vw,3.8rem);
+  font-weight:500;line-height:1.1;
+}
+.sec-h2 em{font-style:italic;color:var(--gold);}
+.sec-p{color:var(--muted);line-height:1.9;font-size:clamp(.85rem,.95vw,.93rem);}
+.sec-head{
+  display:grid;grid-template-columns:1fr 1fr;
+  gap:clamp(2rem,5vw,5rem);align-items:end;
+  margin-bottom:clamp(3rem,5vw,5rem);
+}
+/* Reveal animations — defined in enhanced block */
+
+/* ═══════════════════════════════════════
+   SERVICES BENTO
+═══════════════════════════════════════ */
+.services{background:var(--black);}
+.services::before{
+  content:'DESIGN';position:absolute;top:3rem;right:-2rem;
+  font-family:'Playfair Display',serif;font-size:20vw;font-weight:700;
+  color:rgba(201,168,76,.025);pointer-events:none;line-height:1;z-index:0;
+}
+.services{position:relative;}
+
+.bento{
+  display:grid;
+  grid-template-columns:repeat(12,1fr);
+  gap:2px;
+}
+.sc{position:relative;overflow:hidden;background:var(--panel);}
+.sc:nth-child(1){grid-column:1/6;grid-row:1/3;min-height:500px;}
+.sc:nth-child(2){grid-column:6/9;min-height:248px;}
+.sc:nth-child(3){grid-column:9/13;min-height:248px;}
+.sc:nth-child(4){grid-column:6/9;min-height:248px;}
+.sc:nth-child(5){grid-column:9/11;min-height:248px;}
+.sc:nth-child(6){grid-column:11/13;min-height:248px;}
+.sc img{width:100%;height:100%;object-fit:cover;filter:brightness(.6) saturate(.8);transition:transform .8s cubic-bezier(.25,.46,.45,.94),filter .7s;}
+.sc:hover img{transform:scale(1.08);filter:brightness(.35) saturate(.6);}
+.sc-grad{position:absolute;inset:0;background:linear-gradient(to top,rgba(8,7,5,.95) 0%,rgba(8,7,5,.25) 55%,transparent 100%);transition:background .5s;}
+.sc:hover .sc-grad{background:linear-gradient(to top,rgba(8,7,5,1) 0%,rgba(8,7,5,.7) 60%,rgba(201,168,76,.08) 100%);}
+.sc-body{position:absolute;bottom:0;left:0;right:0;padding:clamp(1.2rem,2vw,2rem);z-index:2;}
+.sc-num{font-family:'Playfair Display',serif;font-size:3.5rem;font-weight:700;color:rgba(201,168,76,.13);line-height:1;transition:color .4s;}
+.sc:hover .sc-num{color:rgba(201,168,76,.28);}
+.sc-title{font-family:'Playfair Display',serif;font-size:clamp(1.1rem,1.6vw,1.5rem);color:var(--cream);margin-bottom:.4rem;}
+.sc:nth-child(1) .sc-title{font-size:clamp(1.3rem,2vw,2rem);}
+.sc-desc{font-size:.82rem;color:rgba(242,235,224,.5);line-height:1.65;max-height:0;overflow:hidden;transition:max-height .5s,opacity .5s;opacity:0;}
+.sc:hover .sc-desc{max-height:80px;opacity:1;}
+.sc-arr{
+  position:absolute;top:1.2rem;right:1.2rem;
+  width:40px;height:40px;border:1px solid rgba(201,168,76,.4);
+  border-radius:50%;display:flex;align-items:center;justify-content:center;
+  color:var(--gold);font-size:1rem;z-index:2;
+  opacity:0;transform:scale(.7) rotate(-45deg);
+  transition:opacity .4s,transform .4s;
+}
+.sc:hover .sc-arr{opacity:1;transform:scale(1) rotate(0);}
+
+/* ═══════════════════════════════════════
+   PARALLAX PHILOSOPHY BAND
+═══════════════════════════════════════ */
+.band{
+  position:relative;
+  min-height:clamp(400px,60vh,680px);
+  display:flex;align-items:center;overflow:hidden;
+}
+.band-bg{position:absolute;inset:-15% 0;z-index:0;}
+.band-bg img{width:100%;height:100%;object-fit:cover;filter:brightness(.28);will-change:transform;}
+.band-overlay{
+  position:absolute;inset:0;z-index:1;
+  background:linear-gradient(135deg,rgba(8,7,5,.88) 35%,rgba(201,168,76,.04) 100%);
+}
+.band-content{
+  position:relative;z-index:2;
+  padding:clamp(3rem,5vw,5rem) clamp(1.2rem,5vw,5rem);
+  max-width:clamp(300px,55%,650px);
+}
+.band-h2{
+  font-family:'Playfair Display',serif;
+  font-size:clamp(2rem,5vw,4.2rem);
+  line-height:1.06;margin-bottom:1.2rem;
+}
+.band-h2 em{font-style:italic;color:var(--gold);}
+.band-p{color:rgba(242,235,224,.6);line-height:1.9;margin-bottom:2rem;font-size:clamp(.85rem,.95vw,.93rem);}
+.band-nums{
+  display:flex;gap:clamp(1.5rem,4vw,3.5rem);
+  padding-top:2rem;border-top:1px solid rgba(201,168,76,.2);
+  flex-wrap:wrap;
+}
+.bn-num{font-family:'Playfair Display',serif;font-size:clamp(1.8rem,3vw,3rem);font-weight:700;color:var(--gold);line-height:1;}
+.bn-lbl{font-size:.7rem;letter-spacing:.15em;text-transform:uppercase;color:rgba(242,235,224,.38);margin-top:.3rem;}
+.band-imgs{
+  position:absolute;right:clamp(1.5rem,5vw,5rem);top:50%;
+  transform:translateY(-50%);z-index:2;
+  display:grid;grid-template-columns:1fr 1fr;gap:.8rem;
+  width:clamp(200px,28%,360px);
+}
+.bi{overflow:hidden;}
+.bi img{width:100%;height:clamp(120px,18vh,185px);object-fit:cover;filter:brightness(.75);transition:transform .6s,filter .5s;}
+.bi:first-child{margin-top:2rem;}
+.bi:hover img{transform:scale(1.06);filter:brightness(.9);}
+
+/* ═══════════════════════════════════════
+   ABOUT
+═══════════════════════════════════════ */
+.about-sec{
+  display:grid;
+  grid-template-columns:5fr 6fr;
+  gap:clamp(3rem,6vw,7rem);
+  align-items:center;
+  background:var(--dark);
+}
+.about-imgs{position:relative;height:clamp(380px,55vw,620px);}
+.ai-main{
+  position:absolute;top:0;left:0;width:78%;height:100%;
+  object-fit:cover;filter:brightness(.88);
+}
+.ai-sm{
+  position:absolute;bottom:clamp(-1rem,0,0);right:clamp(-1.5rem,-2vw,-2rem);
+  width:54%;height:53%;object-fit:cover;
+  border:5px solid var(--dark);filter:brightness(.88);
+}
+.ai-gv{position:absolute;top:12%;right:clamp(-2.5rem,-3vw,-3rem);width:2px;height:100px;background:linear-gradient(to bottom,var(--gold),transparent);}
+.ai-gh{position:absolute;bottom:clamp(-.8rem,-1vw,-1rem);left:8%;height:2px;width:70px;background:linear-gradient(to right,var(--gold),transparent);}
+.ai-badge{
+  position:absolute;top:1.8rem;right:clamp(-1.2rem,-1.5vw,-1rem);
+  background:var(--gold);color:var(--black);
+  padding:1.1rem 1.4rem;text-align:center;z-index:2;
+}
+.ai-bn{font-family:'Playfair Display',serif;font-size:clamp(1.5rem,2.5vw,2rem);font-weight:700;line-height:1;}
+.ai-bt{font-size:.65rem;letter-spacing:.12em;text-transform:uppercase;margin-top:.25rem;}
+.about-quote{
+  font-family:'Playfair Display',serif;font-style:italic;
+  font-size:clamp(1.1rem,1.8vw,1.5rem);line-height:1.6;
+  color:rgba(242,235,224,.82);
+  margin:1.4rem 0 1.8rem;
+  padding-left:1.4rem;
+  border-left:2px solid var(--gold);
+}
+.about-txt{color:var(--muted);line-height:1.9;font-size:clamp(.84rem,.93vw,.9rem);margin-bottom:1rem;}
+.chips{display:flex;gap:.8rem;flex-wrap:wrap;margin-top:2rem;}
+.chip{
+  border:1px solid rgba(201,168,76,.25);
+  padding:.45rem 1rem;font-size:.72rem;
+  letter-spacing:.12em;text-transform:uppercase;color:var(--gold);
+  display:flex;align-items:center;gap:.4rem;
+}
+.chip::before{content:'★';font-size:.65rem;}
+
+/* ═══════════════════════════════════════
+   PROCESS
+═══════════════════════════════════════ */
+.process-sec{background:var(--black);position:relative;}
+.process-sec::before{
+  content:'';position:absolute;inset:0;
+  background:radial-gradient(ellipse at 50% 50%,rgba(201,168,76,.03) 0%,transparent 70%);
+  pointer-events:none;
+}
+.process-grid{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:clamp(1.5rem,3vw,2rem);
+  margin-top:clamp(3rem,5vw,5rem);
+  position:relative;
+}
+.process-grid::before{
+  content:'';position:absolute;
+  top:24px;left:12.5%;right:12.5%;
+  height:1px;
+  background:linear-gradient(to right,transparent,rgba(201,168,76,.3),rgba(201,168,76,.3),rgba(201,168,76,.3),transparent);
+}
+.ps{text-align:center;padding:0 1rem;}
+.ps-num{
+  width:48px;height:48px;border:1px solid rgba(201,168,76,.35);
+  border-radius:50%;margin:0 auto 1.8rem;
+  display:flex;align-items:center;justify-content:center;
+  font-family:'Playfair Display',serif;font-size:1.1rem;color:var(--gold);
+  background:var(--black);position:relative;z-index:1;
+  transition:background .35s,box-shadow .35s;
+}
+.ps:hover .ps-num{background:var(--gold);color:var(--black);box-shadow:0 0 28px rgba(201,168,76,.3);}
+.ps-step{font-size:.65rem;letter-spacing:.2em;text-transform:uppercase;color:rgba(201,168,76,.45);margin-bottom:.5rem;}
+.ps-title{font-family:'Playfair Display',serif;font-size:clamp(1rem,1.4vw,1.15rem);color:var(--cream);margin-bottom:.7rem;}
+.ps-desc{font-size:.82rem;color:var(--muted);line-height:1.7;}
+
+/* ═══════════════════════════════════════
+   GALLERY MOSAIC
+═══════════════════════════════════════ */
+.gallery-sec{background:var(--dark);}
+.mosaic{
+  display:grid;
+  grid-template-columns:repeat(12,1fr);
+  grid-template-rows:repeat(3,clamp(150px,18vw,210px));
+  gap:3px;margin-top:clamp(2.5rem,4vw,4rem);
+}
+.gi{overflow:hidden;position:relative;background:var(--panel);}
+.gi:nth-child(1){grid-column:1/6;grid-row:1/3;}
+.gi:nth-child(2){grid-column:6/9;grid-row:1;}
+.gi:nth-child(3){grid-column:9/13;grid-row:1/3;}
+.gi:nth-child(4){grid-column:6/8;grid-row:2;}
+.gi:nth-child(5){grid-column:8/9;grid-row:2;}
+.gi:nth-child(6){grid-column:1/5;grid-row:3;}
+.gi:nth-child(7){grid-column:5/9;grid-row:3;}
+.gi:nth-child(8){grid-column:9/13;grid-row:3;}
+.gi img{width:100%;height:100%;object-fit:cover;filter:brightness(.78);transition:transform .75s cubic-bezier(.25,.46,.45,.94),filter .6s;}
+.gi:hover img{transform:scale(1.1);filter:brightness(1);}
+.gi-lbl{
+  position:absolute;bottom:0;left:0;right:0;
+  padding:clamp(.8rem,1.5vw,1.2rem) clamp(1rem,1.5vw,1.5rem);
+  background:linear-gradient(to top,rgba(8,7,5,.88),transparent);
+  font-family:'Playfair Display',serif;font-style:italic;
+  font-size:clamp(.8rem,1vw,.95rem);color:var(--cream);
+  opacity:0;transform:translateY(8px);transition:all .4s;
+}
+.gi:hover .gi-lbl{opacity:1;transform:translateY(0);}
+
+/* ═══════════════════════════════════════
+   TESTIMONIALS
+═══════════════════════════════════════ */
+.testi-sec{background:var(--black);}
+.testi-wrap{
+  margin-top:clamp(2.5rem,4vw,4rem);
+  overflow:hidden;
+  -webkit-mask:linear-gradient(to right,transparent,black 8%,black 92%,transparent);
+}
+.testi-track{
+  display:flex;gap:clamp(1rem,2vw,1.8rem);
+  animation:tSlide 32s linear infinite;
+  width:max-content;
+}
+.testi-track:hover{animation-play-state:paused;}
+@keyframes tSlide{from{transform:translateX(0);}to{transform:translateX(-50%);}}
+.tc{
+  min-width:clamp(280px,35vw,380px);
+  background:var(--panel);
+  padding:clamp(1.5rem,2.5vw,2.5rem);
+  border-top:2px solid transparent;
+  transition:border-color .35s;
+  flex-shrink:0;
+  position:relative;overflow:hidden;
+}
+.tc::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(201,168,76,.05),transparent);opacity:0;transition:opacity .35s;}
+.tc:hover{border-top-color:var(--gold);}
+.tc:hover::before{opacity:1;}
+.tc-qm{font-family:'Playfair Display',serif;font-size:4.5rem;color:rgba(201,168,76,.1);line-height:.85;margin-bottom:.3rem;}
+.tc-stars{color:var(--gold);font-size:.75rem;letter-spacing:.1em;margin-bottom:.9rem;}
+.tc-text{font-family:'Playfair Display',serif;font-style:italic;font-size:clamp(.9rem,1.1vw,1.05rem);line-height:1.75;color:rgba(242,235,224,.8);margin-bottom:1.5rem;}
+.tc-auth{display:flex;align-items:center;gap:.9rem;}
+.tc-av{
+  width:42px;height:42px;border-radius:50%;
+  background:linear-gradient(135deg,var(--gold),var(--warm));
+  display:flex;align-items:center;justify-content:center;
+  font-family:'Playfair Display',serif;font-size:.95rem;font-weight:700;color:var(--black);flex-shrink:0;
+}
+.tc-name{font-weight:500;font-size:.88rem;color:var(--cream);}
+.tc-role{font-size:.73rem;color:var(--muted);margin-top:.12rem;}
+
+/* ═══════════════════════════════════════
+   CONTACT
+═══════════════════════════════════════ */
+.contact-sec{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:clamp(3rem,6vw,7rem);
+  align-items:start;
+  background:var(--dark);
+  position:relative;overflow:hidden;
+}
+.contact-sec::before{
+  content:'';position:absolute;top:-40%;left:-20%;
+  width:600px;height:600px;border-radius:50%;
+  background:radial-gradient(circle,rgba(201,168,76,.04),transparent 70%);
+  pointer-events:none;
+}
+.ci-items{display:flex;flex-direction:column;gap:1.8rem;margin-top:2.5rem;}
+.ci{display:flex;gap:1.1rem;align-items:flex-start;}
+.ci-icon{
+  width:46px;height:46px;flex-shrink:0;
+  border:1px solid rgba(201,168,76,.22);
+  display:flex;align-items:center;justify-content:center;
+  font-size:1.1rem;color:var(--gold);position:relative;overflow:hidden;
+  transition:border-color .3s;
+}
+.ci:hover .ci-icon{border-color:var(--gold);}
+.ci-lbl{font-size:.66rem;letter-spacing:.18em;text-transform:uppercase;color:var(--gold);margin-bottom:.3rem;}
+.ci-val{font-size:.88rem;color:rgba(242,235,224,.58);line-height:1.6;}
+
+/* Form */
+.cform{display:flex;flex-direction:column;gap:1.4rem;}
+.frow{display:grid;grid-template-columns:1fr 1fr;gap:1.4rem;}
+.fg{display:flex;flex-direction:column;gap:.4rem;}
+.fg label{font-size:.66rem;letter-spacing:.18em;text-transform:uppercase;color:rgba(201,168,76,.7);}
+.fg input,.fg select,.fg textarea{
+  background:rgba(255,255,255,.04);
+  border:1px solid rgba(242,235,224,.08);
+  border-bottom-color:rgba(201,168,76,.22);
+  color:var(--cream);padding:.85rem 1rem;
+  font-family:'DM Sans',sans-serif;font-size:.88rem;font-weight:300;
+  outline:none;border-radius:1px;
+  transition:border-color .3s,background .3s;
+  -webkit-appearance:none;appearance:none;
+  width:100%;
+}
+.fg input:focus,.fg select:focus,.fg textarea:focus{
+  border-color:var(--gold);background:rgba(201,168,76,.04);
+}
+.fg select option{background:#1a1916;}
+.fg textarea{resize:none;height:110px;}
+.sbtn{
+  position:relative;overflow:hidden;
+  background:transparent;border:1.5px solid var(--gold);
+  color:var(--gold);
+  padding:1.1rem 2.8rem;
+  font-family:'DM Sans',sans-serif;font-size:.8rem;
+  letter-spacing:.18em;text-transform:uppercase;font-weight:500;
+  align-self:flex-start;transition:color .4s;
+}
+.sbtn::before{
+  content:'';position:absolute;inset:0;background:var(--gold);
+  transform:translateX(-101%);transition:transform .4s ease;z-index:0;
+}
+.sbtn:hover{color:var(--black);}
+.sbtn:hover::before{transform:translateX(0);}
+.sbtn span{position:relative;z-index:1;}
+
+/* ═══════════════════════════════════════
+   FOOTER
+═══════════════════════════════════════ */
+footer{background:#050403;padding:clamp(3rem,5vw,5rem) clamp(1.2rem,5vw,5rem) clamp(1.5rem,3vw,2.5rem);}
+.footer-grid{
+  display:grid;
+  grid-template-columns:2.2fr 1fr 1fr 1fr;
+  gap:clamp(2rem,4vw,3rem);
+  padding-bottom:3rem;
+  border-bottom:1px solid rgba(201,168,76,.08);
+}
+.fl{font-family:'Playfair Display',serif;font-size:clamp(1.4rem,2.5vw,1.9rem);font-weight:700;color:var(--cream);margin-bottom:.9rem;}
+.fl span{color:var(--gold);}
+.ft{font-size:.84rem;color:var(--muted);line-height:1.8;max-width:270px;margin-bottom:1.8rem;}
+.fsoc{display:flex;gap:.75rem;flex-wrap:wrap;}
+.fsb{
+  width:38px;height:38px;border-radius:10px;
+  display:flex;align-items:center;justify-content:center;
+  text-decoration:none;
+  transition:transform .3s,box-shadow .3s,opacity .3s;
+  overflow:hidden;
+  opacity:.82;
+}
+.fsb:hover{transform:translateY(-3px) scale(1.08);box-shadow:0 8px 20px rgba(0,0,0,.4);opacity:1;}
+.fsb svg{width:22px;height:22px;display:block;}
+.footer-col h4{font-size:.68rem;letter-spacing:.22em;text-transform:uppercase;color:var(--gold);margin-bottom:1.3rem;}
+.footer-col ul{list-style:none;display:flex;flex-direction:column;gap:.7rem;}
+.footer-col a{
+  text-decoration:none;font-size:.84rem;color:var(--muted);
+  transition:color .3s,padding-left .3s;display:inline-block;
+}
+.footer-col a:hover{color:var(--cream);padding-left:.4rem;}
+.footer-btm{
+  display:flex;justify-content:space-between;align-items:center;
+  padding-top:2rem;font-size:.76rem;color:rgba(242,235,224,.22);
+  flex-wrap:wrap;gap:.8rem;
+}
+.footer-btm a{color:var(--gold);text-decoration:none;}
+
+/* ═══════════════════════════════════════
+   WHATSAPP FLOATING WIDGET
+═══════════════════════════════════════ */
+.wa-float{
+  position:fixed;
+  bottom:2rem;right:2rem;
+  z-index:800;
+  display:flex;flex-direction:column;
+  align-items:flex-end;
+  gap:.7rem;
+}
+
+/* Bubble banner */
+.wa-banner{
+  background:#fff;
+  border-radius:14px 14px 0 14px;
+  padding:.7rem 1.1rem;
+  display:flex;align-items:center;gap:.6rem;
+  box-shadow:0 8px 32px rgba(0,0,0,.22);
+  transform:scale(0);transform-origin:bottom right;
+  opacity:0;
+  transition:transform .4s cubic-bezier(.34,1.56,.64,1),opacity .3s;
+  pointer-events:none;
+  white-space:nowrap;
+}
+.wa-banner.show{
+  transform:scale(1);opacity:1;pointer-events:auto;
+}
+.wa-banner-dot{
+  width:8px;height:8px;border-radius:50%;
+  background:#25d366;
+  animation:waPulse 1.6s infinite;
+  flex-shrink:0;
+}
+@keyframes waPulse{
+  0%,100%{box-shadow:0 0 0 0 rgba(37,211,102,.5);}
+  50%{box-shadow:0 0 0 6px rgba(37,211,102,0);}
+}
+.wa-banner-text{
+  font-family:'DM Sans',sans-serif;
+  font-size:.8rem;font-weight:500;color:#1a1a1a;
+  line-height:1.3;
+}
+.wa-banner-text span{
+  display:block;font-size:.68rem;font-weight:300;color:#666;margin-top:.1rem;
+}
+.wa-banner-close{
+  background:none;border:none;color:#999;font-size:1rem;
+  line-height:1;padding:.1rem .2rem;cursor:pointer;
+  margin-left:.3rem;transition:color .2s;
+}
+.wa-banner-close:hover{color:#333;}
+
+/* Main WhatsApp button */
+.wa-btn{
+  width:60px;height:60px;
+  background:linear-gradient(135deg,#25d366,#128c7e);
+  border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  text-decoration:none;
+  box-shadow:0 6px 24px rgba(37,211,102,.45),0 2px 8px rgba(0,0,0,.2);
+  transition:transform .35s cubic-bezier(.34,1.56,.64,1),box-shadow .35s;
+  position:relative;overflow:hidden;
+  cursor:none;
+}
+.wa-btn::before{
+  content:'';position:absolute;inset:0;border-radius:50%;
+  background:rgba(255,255,255,.12);
+  transform:scale(0);transition:transform .4s;
+}
+.wa-btn:hover{
+  transform:scale(1.12);
+  box-shadow:0 10px 32px rgba(37,211,102,.55),0 4px 12px rgba(0,0,0,.25);
+}
+.wa-btn:hover::before{transform:scale(1);}
+.wa-btn svg{width:32px;height:32px;flex-shrink:0;position:relative;z-index:1;}
+
+/* Ripple ping around WhatsApp button */
+.wa-btn::after{
+  content:'';position:absolute;inset:-4px;border-radius:50%;
+  border:2px solid rgba(37,211,102,.4);
+  animation:waRing 2.5s ease-out infinite;
+}
+@keyframes waRing{
+  0%{transform:scale(1);opacity:1;}
+  100%{transform:scale(1.5);opacity:0;}
+}
+
+/* ── WhatsApp in Contact Form ── */
+.wa-form-divider{
+  display:flex;align-items:center;gap:1rem;
+  margin:.5rem 0;
+}
+.wa-form-divider::before,.wa-form-divider::after{
+  content:'';flex:1;height:1px;
+  background:rgba(201,168,76,.12);
+}
+.wa-form-divider span{
+  font-size:.7rem;letter-spacing:.12em;
+  text-transform:uppercase;color:var(--muted);
+  white-space:nowrap;
+}
+.wa-form-btn{
+  display:flex;align-items:center;justify-content:center;gap:.8rem;
+  background:linear-gradient(135deg,#25d366,#128c7e);
+  color:#fff;border:none;
+  padding:1rem 2rem;
+  font-family:'DM Sans',sans-serif;
+  font-size:.82rem;letter-spacing:.1em;
+  text-transform:uppercase;font-weight:500;
+  cursor:none;
+  transition:all .35s;
+  position:relative;overflow:hidden;
+  width:100%;
+}
+.wa-form-btn::before{
+  content:'';position:absolute;inset:0;
+  background:rgba(255,255,255,.1);
+  transform:translateX(-101%);transition:transform .4s ease;
+}
+.wa-form-btn:hover::before{transform:translateX(0);}
+.wa-form-btn:hover{
+  box-shadow:0 8px 28px rgba(37,211,102,.35);
+  transform:translateY(-1px);
+}
+.wa-form-btn svg{width:20px;height:20px;flex-shrink:0;}
+.wa-form-note{
+  text-align:center;font-size:.72rem;color:var(--muted);
+  margin-top:.4rem;
+}
+
+/* ═══════════════════════════════════════
+   COST ESTIMATOR
+═══════════════════════════════════════ */
+.estimator-sec{
+  background:var(--panel);
+  position:relative;overflow:hidden;
+}
+.estimator-sec::before{
+  content:'₹';
+  position:absolute;right:-2rem;top:-2rem;
+  font-family:'Playfair Display',serif;
+  font-size:28vw;font-weight:700;
+  color:rgba(201,168,76,.028);
+  pointer-events:none;line-height:1;
+}
+
+/* Steps progress bar */
+.calc-progress{
+  display:flex;align-items:center;
+  gap:0;margin-bottom:3.5rem;
+  position:relative;
+}
+.cp-step{
+  display:flex;align-items:center;gap:.8rem;
+  flex:1;position:relative;
+}
+.cp-step:last-child{flex:0;}
+.cp-dot{
+  width:40px;height:40px;border-radius:50%;
+  border:2px solid rgba(201,168,76,.3);
+  display:flex;align-items:center;justify-content:center;
+  font-family:'Playfair Display',serif;font-size:.9rem;
+  color:var(--muted);background:var(--panel);
+  flex-shrink:0;position:relative;z-index:1;
+  transition:all .4s;
+}
+.cp-step.active .cp-dot{
+  border-color:var(--gold);color:var(--gold);
+  box-shadow:0 0 20px rgba(201,168,76,.25);
+}
+.cp-step.done .cp-dot{
+  background:var(--gold);border-color:var(--gold);color:var(--black);
+}
+.cp-label{
+  font-size:clamp(.65rem,.8vw,.75rem);
+  letter-spacing:.1em;text-transform:uppercase;
+  color:var(--muted);transition:color .4s;
+  white-space:nowrap;
+}
+.cp-step.active .cp-label,.cp-step.done .cp-label{color:var(--gold);}
+.cp-line{
+  flex:1;height:1px;
+  background:rgba(201,168,76,.15);
+  margin:0 .5rem;position:relative;overflow:hidden;
+}
+.cp-line-fill{
+  position:absolute;top:0;left:0;width:0%;height:100%;
+  background:var(--gold);transition:width .6s ease;
+}
+
+/* Calculator panels */
+.calc-panels{position:relative;min-height:420px;}
+.calc-panel{
+  display:none;
+  animation:panelIn .4s ease;
+}
+.calc-panel.active{display:block;}
+@keyframes panelIn{from{opacity:0;transform:translateX(20px);}to{opacity:1;transform:translateX(0);}}
+
+.calc-panel-title{
+  font-family:'Playfair Display',serif;
+  font-size:clamp(1.3rem,2.5vw,1.8rem);
+  margin-bottom:.5rem;
+}
+.calc-panel-title em{font-style:italic;color:var(--gold);}
+.calc-panel-sub{
+  color:var(--muted);font-size:.88rem;
+  line-height:1.6;margin-bottom:2rem;
+}
+
+/* Service cards grid */
+.svc-cards{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:1rem;margin-bottom:2rem;
+}
+.svc-card{
+  border:1.5px solid rgba(201,168,76,.15);
+  padding:1.4rem 1.2rem;
+  cursor:none;transition:all .3s;
+  position:relative;overflow:hidden;
+  background:rgba(255,255,255,.02);
+}
+.svc-card::before{
+  content:'';position:absolute;inset:0;
+  background:linear-gradient(135deg,rgba(201,168,76,.06),transparent);
+  opacity:0;transition:opacity .3s;
+}
+.svc-card:hover{border-color:rgba(201,168,76,.4);}
+.svc-card:hover::before{opacity:1;}
+.svc-card.selected{
+  border-color:var(--gold);
+  background:rgba(201,168,76,.08);
+}
+.svc-card.selected::before{opacity:1;}
+.svc-card-icon{font-size:1.8rem;margin-bottom:.8rem;display:block;}
+.svc-card-name{
+  font-family:'Playfair Display',serif;
+  font-size:clamp(.95rem,1.2vw,1.05rem);
+  color:var(--cream);margin-bottom:.3rem;
+}
+.svc-card-rate{
+  font-size:.75rem;color:var(--gold);
+  letter-spacing:.05em;
+}
+.svc-card-check{
+  position:absolute;top:.8rem;right:.8rem;
+  width:20px;height:20px;border-radius:50%;
+  background:var(--gold);
+  display:flex;align-items:center;justify-content:center;
+  font-size:.65rem;color:var(--black);
+  opacity:0;transform:scale(0);
+  transition:all .3s;
+}
+.svc-card.selected .svc-card-check{opacity:1;transform:scale(1);}
+
+/* Area / quality inputs */
+.calc-inputs-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:1.5rem;margin-bottom:2rem;
+}
+.calc-inp-group{display:flex;flex-direction:column;gap:.5rem;}
+.calc-inp-label{
+  font-size:.7rem;letter-spacing:.18em;
+  text-transform:uppercase;color:rgba(201,168,76,.75);
+}
+.calc-inp{
+  background:rgba(255,255,255,.04);
+  border:1px solid rgba(242,235,224,.08);
+  border-bottom-color:rgba(201,168,76,.25);
+  color:var(--cream);padding:.85rem 1rem;
+  font-family:'DM Sans',sans-serif;font-size:.95rem;
+  outline:none;border-radius:1px;
+  transition:border-color .3s,background .3s;
+  width:100%;
+}
+.calc-inp:focus{border-color:var(--gold);background:rgba(201,168,76,.04);}
+.calc-inp-hint{font-size:.72rem;color:var(--muted);margin-top:.25rem;}
+
+/* Range slider */
+.range-wrap{position:relative;padding-bottom:.5rem;}
+.calc-range{
+  -webkit-appearance:none;appearance:none;
+  width:100%;height:3px;
+  background:rgba(201,168,76,.2);
+  border-radius:2px;outline:none;
+  cursor:none;margin:1rem 0 .3rem;
+}
+.calc-range::-webkit-slider-thumb{
+  -webkit-appearance:none;appearance:none;
+  width:20px;height:20px;border-radius:50%;
+  background:var(--gold);cursor:none;
+  box-shadow:0 0 10px rgba(201,168,76,.4);
+  transition:transform .2s;
+}
+.calc-range::-webkit-slider-thumb:hover{transform:scale(1.3);}
+.calc-range::-moz-range-thumb{
+  width:20px;height:20px;border-radius:50%;
+  background:var(--gold);border:none;cursor:none;
+}
+.range-labels{display:flex;justify-content:space-between;font-size:.7rem;color:var(--muted);}
+
+/* Quality selector */
+.quality-opts{
+  display:grid;grid-template-columns:repeat(3,1fr);
+  gap:.8rem;
+}
+.qopt{
+  border:1.5px solid rgba(201,168,76,.15);
+  padding:1rem;text-align:center;cursor:none;
+  transition:all .3s;background:rgba(255,255,255,.02);
+}
+.qopt:hover{border-color:rgba(201,168,76,.35);}
+.qopt.selected{border-color:var(--gold);background:rgba(201,168,76,.08);}
+.qopt-name{
+  font-family:'Playfair Display',serif;
+  font-size:.95rem;color:var(--cream);
+  margin-bottom:.3rem;
+}
+.qopt-desc{font-size:.72rem;color:var(--muted);line-height:1.4;}
+.qopt-mult{
+  display:inline-block;margin-top:.5rem;
+  font-size:.7rem;color:var(--gold);
+  letter-spacing:.08em;
+}
+
+/* Add-ons checkboxes */
+.addons-grid{
+  display:grid;grid-template-columns:1fr 1fr;
+  gap:.8rem;margin-bottom:2rem;
+}
+.addon{
+  display:flex;align-items:flex-start;gap:.8rem;
+  border:1.5px solid rgba(201,168,76,.12);
+  padding:.9rem 1rem;cursor:none;
+  transition:all .3s;
+  background:rgba(255,255,255,.02);
+}
+.addon:hover{border-color:rgba(201,168,76,.3);}
+.addon.selected{border-color:var(--gold);background:rgba(201,168,76,.06);}
+.addon-cb{
+  width:18px;height:18px;border:1.5px solid rgba(201,168,76,.4);
+  flex-shrink:0;margin-top:.1rem;
+  display:flex;align-items:center;justify-content:center;
+  transition:all .3s;
+}
+.addon.selected .addon-cb{background:var(--gold);border-color:var(--gold);}
+.addon-cb-tick{font-size:.6rem;color:var(--black);opacity:0;transition:opacity .2s;}
+.addon.selected .addon-cb-tick{opacity:1;}
+.addon-info{}
+.addon-name{font-size:.88rem;color:var(--cream);font-weight:400;margin-bottom:.15rem;}
+.addon-cost{font-size:.73rem;color:var(--gold);}
+
+/* Result panel */
+.result-panel{
+  background:rgba(201,168,76,.06);
+  border:1px solid rgba(201,168,76,.2);
+  padding:2.5rem;
+}
+.result-title{
+  font-family:'Playfair Display',serif;
+  font-size:clamp(1.3rem,2.5vw,1.7rem);
+  margin-bottom:2rem;text-align:center;
+}
+.result-title em{font-style:italic;color:var(--gold);}
+.result-breakdown{
+  display:flex;flex-direction:column;gap:.8rem;
+  margin-bottom:2rem;
+}
+.rb-row{
+  display:flex;justify-content:space-between;align-items:center;
+  padding-bottom:.8rem;border-bottom:1px solid rgba(201,168,76,.08);
+  font-size:.88rem;
+}
+.rb-row:last-child{border-bottom:none;}
+.rb-label{color:var(--muted);}
+.rb-val{color:var(--cream);font-weight:400;}
+.result-total{
+  background:var(--dark);
+  padding:1.5rem 2rem;
+  display:flex;justify-content:space-between;align-items:center;
+  margin-bottom:2rem;border-top:2px solid var(--gold);
+}
+.rt-label{font-size:.78rem;letter-spacing:.15em;text-transform:uppercase;color:var(--muted);}
+.rt-range{
+  font-family:'Playfair Display',serif;
+  font-size:clamp(1.4rem,3vw,2rem);
+  font-weight:700;color:var(--gold);
+}
+.result-note{
+  font-size:.78rem;color:var(--muted);
+  line-height:1.7;text-align:center;
+  padding:.8rem;background:rgba(255,255,255,.02);
+  border-left:2px solid rgba(201,168,76,.3);
+  text-align:left;
+}
+.result-btns{
+  display:flex;gap:1rem;margin-top:1.5rem;flex-wrap:wrap;
+}
+
+/* Nav buttons */
+.calc-nav{
+  display:flex;justify-content:space-between;
+  align-items:center;margin-top:2.5rem;
+  padding-top:1.5rem;
+  border-top:1px solid rgba(201,168,76,.1);
+}
+.calc-back{
+  background:none;border:1px solid rgba(201,168,76,.25);
+  color:var(--muted);padding:.75rem 1.8rem;
+  font-family:'DM Sans',sans-serif;font-size:.78rem;
+  letter-spacing:.12em;text-transform:uppercase;
+  cursor:none;transition:all .3s;
+}
+.calc-back:hover{border-color:var(--gold);color:var(--gold);}
+.calc-next{
+  position:relative;overflow:hidden;
+  background:var(--gold);color:var(--black);
+  border:none;padding:.85rem 2.5rem;
+  font-family:'DM Sans',sans-serif;font-size:.8rem;
+  letter-spacing:.15em;text-transform:uppercase;font-weight:500;
+  cursor:none;transition:color .35s;
+}
+.calc-next::before{
+  content:'';position:absolute;inset:0;background:var(--gold2);
+  transform:translateX(-101%);transition:transform .4s ease;z-index:0;
+}
+.calc-next:hover::before{transform:translateX(0);}
+.calc-next span{position:relative;z-index:1;}
+.calc-next:disabled{
+  opacity:.4;cursor:not-allowed;
+}
+.calc-next:disabled::before{display:none;}
+
+/* Live preview bar */
+.live-bar{
+  display:flex;align-items:center;justify-content:space-between;
+  background:rgba(201,168,76,.07);
+  border:1px solid rgba(201,168,76,.18);
+  padding:1rem 1.5rem;
+  margin-bottom:2rem;
+  gap:1rem;flex-wrap:wrap;
+}
+.lb-label{font-size:.72rem;letter-spacing:.15em;text-transform:uppercase;color:var(--muted);}
+.lb-est{
+  font-family:'Playfair Display',serif;
+  font-size:clamp(1.1rem,2vw,1.4rem);
+  font-weight:700;color:var(--gold);
+}
+.lb-note{font-size:.7rem;color:var(--muted);}
+
+/* Calc layout: 2-col on desktop */
+.calc-layout{
+  display:grid;
+  grid-template-columns:1fr 340px;
+  gap:3rem;
+  align-items:start;
+}
+.calc-sidebar{
+  position:sticky;top:calc(var(--nav-h) + 1.5rem);
+}
+.sidebar-card{
+  background:var(--dark);
+  border:1px solid rgba(201,168,76,.15);
+  padding:2rem;
+}
+.sc-hd{
+  font-family:'Playfair Display',serif;
+  font-size:1.05rem;margin-bottom:1.5rem;
+  color:var(--cream);display:flex;
+  align-items:center;gap:.5rem;
+}
+.sc-hd::before{content:'💡';font-size:.9rem;}
+.tip-list{display:flex;flex-direction:column;gap:1rem;}
+.tip{display:flex;gap:.8rem;align-items:flex-start;}
+.tip-icon{
+  width:28px;height:28px;border-radius:50%;
+  background:rgba(201,168,76,.12);
+  display:flex;align-items:center;justify-content:center;
+  font-size:.8rem;flex-shrink:0;margin-top:.05rem;
+}
+.tip-text{font-size:.8rem;color:var(--muted);line-height:1.6;}
+.tip-text strong{display:block;color:rgba(242,235,224,.7);font-weight:400;margin-bottom:.1rem;}
+.sel-summary{
+  margin-top:1.5rem;padding-top:1.5rem;
+  border-top:1px solid rgba(201,168,76,.1);
+}
+.ss-row{
+  display:flex;justify-content:space-between;
+  font-size:.8rem;padding:.35rem 0;
+  color:var(--muted);
+}
+.ss-row span:last-child{color:rgba(242,235,224,.7);}
+.ss-est{
+  margin-top:1rem;padding:1rem;
+  background:rgba(201,168,76,.08);
+  border-top:2px solid var(--gold);
+  text-align:center;
+}
+.ss-est-lbl{font-size:.65rem;letter-spacing:.15em;text-transform:uppercase;color:var(--muted);margin-bottom:.3rem;}
+.ss-est-val{
+  font-family:'Playfair Display',serif;
+  font-size:1.5rem;font-weight:700;color:var(--gold);
+}
+
+/* ═══════════════════════════════════════
+   RESPONSIVE BREAKPOINTS
+═══════════════════════════════════════ */
+
+/* ── Calc responsive ── */
+@media(max-width:1100px){
+  .calc-layout{grid-template-columns:1fr;}
+  .calc-sidebar{position:static;}
+}
+@media(max-width:640px){
+  .svc-cards{grid-template-columns:1fr 1fr;}
+  .calc-inputs-grid{grid-template-columns:1fr;}
+  .quality-opts{grid-template-columns:1fr;}
+  .addons-grid{grid-template-columns:1fr;}
+  .result-btns{flex-direction:column;}
+  .result-btns .sbtn,.result-btns .calc-back{width:100%;text-align:center;}
+  .calc-progress{gap:.2rem;}
+  .cp-label{display:none;}
+}
+@media(max-width:420px){
+  .svc-cards{grid-template-columns:1fr;}
+}
+
+/* ── Tablet (≤1024px) ── */
+@media(max-width:1024px){
+  .sec-head{grid-template-columns:1fr;gap:1.5rem;}
+  .bento{grid-template-columns:1fr 1fr;}
+  .sc{grid-column:auto!important;grid-row:auto!important;min-height:230px!important;}
+  .sc:nth-child(1){min-height:320px!important;}
+  .process-grid{grid-template-columns:1fr 1fr;gap:2.5rem 2rem;}
+  .process-grid::before{display:none;}
+  .band-imgs{display:none;}
+  .band-content{max-width:100%;}
+  .about-sec{grid-template-columns:1fr;gap:3rem;}
+  .about-imgs{height:clamp(280px,55vw,400px);}
+  .ai-gv,.ai-gh{display:none;}
+  .ai-sm{right:-1rem;bottom:-1rem;}
+  .contact-sec{grid-template-columns:1fr;gap:3rem;}
+  .footer-grid{grid-template-columns:1fr 1fr;gap:2.5rem;}
+}
+
+/* ── Mobile (≤768px) ── */
+@media(max-width:768px){
+  /* Nav */
+  .nav-links{display:none;}
+  .hamburger{display:flex;}
+
+  /* Hero */
+  .hero{min-height:100svh;align-items:flex-end;}
+  .hero-overlay{
+    background:
+      linear-gradient(to top,rgba(8,7,5,1) 0%,rgba(8,7,5,.85) 35%,rgba(8,7,5,.55) 65%,rgba(8,7,5,.25) 100%);
+  }
+  .hero-content{padding:2rem 1.4rem clamp(8rem,22vw,10rem);}
+  .hero-sub{background:none;backdrop-filter:none;padding:0;}
+  .hero-stats{grid-template-columns:repeat(2,1fr);}
+  .hs:nth-child(3){border-top:1px solid rgba(201,168,76,.1);}
+  .hero-scroll-hint{display:none;}
+  .hero-btns{gap:1rem;}
+
+  /* Services */
+  .bento{grid-template-columns:1fr;}
+  .sc{grid-column:auto!important;grid-row:auto!important;min-height:220px!important;}
+  .sc:nth-child(1){min-height:280px!important;}
+
+  /* Gallery mosaic – switch to 2 col */
+  .mosaic{
+    grid-template-columns:1fr 1fr;
+    grid-template-rows:repeat(4,clamp(130px,35vw,180px));
+  }
+  .gi{grid-column:auto!important;grid-row:auto!important;}
+  .gi:nth-child(1),.gi:nth-child(3){grid-column:span 1!important;}
+
+  /* About */
+  .about-imgs{height:clamp(260px,70vw,360px);}
+  .ai-sm{width:48%;height:46%;}
+  .ai-badge{right:.5rem;}
+
+  /* Process */
+  .process-grid{grid-template-columns:1fr;gap:2rem;}
+
+  /* Contact form */
+  .frow{grid-template-columns:1fr;}
+
+  /* Footer */
+  .footer-grid{grid-template-columns:1fr;}
+  .footer-btm{flex-direction:column;text-align:center;}
+
+  /* Band */
+  .band-content{padding:3rem 1.4rem;}
+  .band-nums{gap:1.5rem;}
+}
+
+/* ── Small mobile (≤420px) ── */
+@media(max-width:420px){
+  h1.hero-title{font-size:2.5rem;}
+  .hero-stats{grid-template-columns:1fr 1fr;}
+  .hs{padding:.9rem .6rem;}
+  .hs-num{font-size:1.3rem;}
+  .hs-lbl{font-size:.55rem;}
+  .btn-gold{padding:.85rem 1.5rem;font-size:.72rem;}
+}
+</style>
+</head>
+<body>
+
+<!-- PRELOADER -->
+<div id="preloader">
+  <div class="pl-logo">CS <span>Interio</span></div>
+  <div class="pl-bar-wrap"><div class="pl-bar" id="plBar"></div></div>
+  <div class="pl-pct" id="plPct">0%</div>
+</div>
+
+<!-- SCROLL PROGRESS -->
+<div id="scrollProgress"></div>
+
+<!-- BACK TO TOP -->
+<a href="#" id="backTop" title="Back to top" aria-label="Back to top">↑</a>
+
+<!-- PARTICLE CANVAS -->
+<canvas id="particleCanvas"></canvas>
+
+<!-- CURSOR -->
+<div id="cur"></div>
+<div id="cur-ring"></div>
+<div id="cur-trail"></div>
+
+<!-- ══════════ NAV ══════════ -->
+<nav id="mainNav">
+  <a href="#" class="logo"><span class="logo-cs">CS</span><div class="logo-dot"></div>Interio</a>
+  <ul class="nav-links">
+    <li><a href="#services">Services</a></li>
+    <li><a href="#about">Studio</a></li>
+    <li><a href="#process">Process</a></li>
+    <li><a href="#gallery">Portfolio</a></li>
+    <li><a href="#estimator">Cost Estimate</a></li>
+    <li><a href="#contact" class="nav-cta">Consult Us</a></li>
+  </ul>
+  <button class="hamburger" id="ham" aria-label="Menu">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<!-- Mobile drawer -->
+<div class="mobile-nav" id="mobileNav">
+  <a href="#services" onclick="closeMenu()">Services</a>
+  <a href="#about" onclick="closeMenu()">Studio</a>
+  <a href="#process" onclick="closeMenu()">Process</a>
+  <a href="#gallery" onclick="closeMenu()">Portfolio</a>
+  <a href="#estimator" onclick="closeMenu()">Cost Estimate</a>
+  <a href="#contact" class="m-cta" onclick="closeMenu()">Consult Us</a>
+</div>
+
+<!-- ══════════ HERO ══════════ -->
+<section class="hero" id="home">
+  <div class="hero-bg">
+    <img src="https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?w=1800&auto=format&fit=crop&q=85" alt="Luxury Living Room Interior">
+  </div>
+  <div class="hero-overlay"></div>
+
+  <!-- Animated gradient orbs -->
+  <div class="hero-orb hero-orb-1"></div>
+  <div class="hero-orb hero-orb-2"></div>
+  <div class="hero-orb hero-orb-3"></div>
+
+  <!-- Rotating badge -->
+  <div class="hero-badge-wrap">
+    <div class="hero-badge">
+      <div class="hero-badge-ring">
+        <svg viewBox="0 0 140 140">
+          <defs>
+            <path id="badgeCircle" d="M 70,70 m -55,0 a 55,55 0 1,1 110,0 a 55,55 0 1,1 -110,0"/>
+          </defs>
+          <text>
+            <textPath href="#badgeCircle">CS INTERIO · HYDERABAD · LUXURY DESIGN · SINCE 2012 ·</textPath>
+          </text>
+        </svg>
+      </div>
+      <div class="hero-badge-inner">
+        <div class="hero-badge-num">12+</div>
+        <div class="hero-badge-txt">Years of<br>Excellence</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Decorative vertical element -->
+  <div class="hero-deco">
+    <div class="hero-deco-line"></div>
+    <div class="hero-deco-cross"></div>
+  </div>
+
+  <div class="hero-content">
+    <div class="hero-tag">
+      <div class="hero-tag-dot"></div>
+      Award-Winning Interior Design Studio
+    </div>
+
+    <h1 class="hero-title">
+      <span class="hero-line">Spaces That</span>
+      <span class="hero-line hero-line-outline">Define Your</span>
+      <span class="hero-line"><em class="hero-highlight">Legacy</em></span>
+    </h1>
+
+    <p class="hero-sub">
+      CS Interio crafts extraordinary interiors for those who demand nothing short of perfection — from intimate residences to iconic commercial spaces.
+    </p>
+
+    <div class="hero-btns">
+      <a href="#gallery" class="btn-gold mag-btn"><span>Explore Portfolio</span></a>
+      <a href="#contact" class="btn-line"><span class="btn-line-bar"></span>Free Consultation</a>
+    </div>
+  </div>
+
+  <!-- Scroll hint -->
+  <div class="hero-scroll-hint">
+    <div class="scroll-label">Scroll</div>
+    <div class="scroll-bar"></div>
+  </div>
+
+  <!-- Stats bar -->
+  <div class="hero-stats">
+    <div class="hs"><div class="hs-num" data-count="250">0</div><div class="hs-lbl">Projects Completed</div></div>
+    <div class="hs"><div class="hs-num" data-count="12">0</div><div class="hs-lbl">Years of Excellence</div></div>
+    <div class="hs"><div class="hs-num" data-count="98">0</div><div class="hs-lbl">Satisfaction Rate %</div></div>
+    <div class="hs"><div class="hs-num" data-count="35">0</div><div class="hs-lbl">Expert Designers</div></div>
+  </div>
+</section>
+
+<!-- ══════════ TICKER ══════════ -->
+<div class="ticker">
+  <div class="ticker-inner">
+    <div class="ti">Office Spaces</div><div class="ti">Individual Houses</div>
+    <div class="ti">Luxury Villas</div><div class="ti">Commercial Spaces</div>
+    <div class="ti">Modular Kitchens</div><div class="ti">Custom Interiors</div>
+    <div class="ti">False Ceiling Design</div><div class="ti">Bedroom Interiors</div>
+    <div class="ti">Living Room Design</div><div class="ti">Wardrobe Solutions</div>
+    <!-- duplicate -->
+    <div class="ti">Office Spaces</div><div class="ti">Individual Houses</div>
+    <div class="ti">Luxury Villas</div><div class="ti">Commercial Spaces</div>
+    <div class="ti">Modular Kitchens</div><div class="ti">Custom Interiors</div>
+    <div class="ti">False Ceiling Design</div><div class="ti">Bedroom Interiors</div>
+    <div class="ti">Living Room Design</div><div class="ti">Wardrobe Solutions</div>
+  </div>
+</div>
+
+<!-- ══════════ SERVICES ══════════ -->
+<section class="sec services" id="services">
+  <div class="sec-watermark" style="top:1rem;right:-2rem;">01</div>
+  <div class="sec-head">
+    <div class="rl">
+      <div class="sec-tag">What We Do</div>
+      <h2 class="sec-h2">Design Spaces That<br><em>Tell Your Story</em></h2>
+    </div>
+    <p class="sec-p rr">From sprawling luxury villas to precision-engineered modular kitchens, every project is a unique expression of our client's vision and our craft.</p>
+  </div>
+  <div class="bento rv">
+    <div class="sc shine-card">
+      <div class="sc-border"></div>
+      <img src="https://images.unsplash.com/photo-1497366216548-37526070297c?w=800&auto=format&fit=crop&q=80" alt="Office Spaces">
+      <div class="sc-grad"></div><div class="sc-arr">↗</div>
+      <div class="sc-body"><div class="sc-num">01</div><div class="sc-title">Office Spaces</div><div class="sc-desc">Workplaces designed to boost productivity, reflect your brand, and inspire collaboration every day.</div></div>
+    </div>
+    <div class="sc shine-card">
+      <div class="sc-border"></div>
+      <img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=600&auto=format&fit=crop&q=80" alt="Individual Houses">
+      <div class="sc-grad"></div><div class="sc-arr">↗</div>
+      <div class="sc-body"><div class="sc-num">02</div><div class="sc-title">Individual Houses</div><div class="sc-desc">Personalized homes reflecting your unique taste and lifestyle.</div></div>
+    </div>
+    <div class="sc shine-card">
+      <div class="sc-border"></div>
+      <img src="https://images.unsplash.com/photo-1613977257365-aaae5a9817ff?w=600&auto=format&fit=crop&q=80" alt="Luxury Villas">
+      <div class="sc-grad"></div><div class="sc-arr">↗</div>
+      <div class="sc-body"><div class="sc-num">03</div><div class="sc-title">Luxury Villas</div><div class="sc-desc">Grand interiors with bespoke finishes and world-class material palettes.</div></div>
+    </div>
+    <div class="sc shine-card">
+      <div class="sc-border"></div>
+      <img src="https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=600&auto=format&fit=crop&q=80" alt="Commercial Spaces">
+      <div class="sc-grad"></div><div class="sc-arr">↗</div>
+      <div class="sc-body"><div class="sc-num">04</div><div class="sc-title">Commercial Spaces</div><div class="sc-desc">Retail, hospitality, and F&B spaces that captivate and convert customers.</div></div>
+    </div>
+    <div class="sc shine-card">
+      <div class="sc-border"></div>
+      <img src="https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=500&auto=format&fit=crop&q=80" alt="Modular Kitchens">
+      <div class="sc-grad"></div><div class="sc-arr">↗</div>
+      <div class="sc-body"><div class="sc-num">05</div><div class="sc-title">Modular Kitchens</div><div class="sc-desc">Smart, beautiful kitchens with precision engineering.</div></div>
+    </div>
+    <div class="sc shine-card">
+      <div class="sc-border"></div>
+      <img src="https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=500&auto=format&fit=crop&q=80" alt="Custom Interiors">
+      <div class="sc-grad"></div><div class="sc-arr">↗</div>
+      <div class="sc-body"><div class="sc-num">06</div><div class="sc-title">Custom Interiors</div><div class="sc-desc">Bespoke solutions for every taste and vision, from minimalist to maximalist.</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════ PHILOSOPHY BAND ══════════ -->
+<div class="band" id="bandSec">
+  <div class="band-bg" id="bandBg"><img src="https://images.unsplash.com/photo-1631679706909-1844bbd07221?w=1800&auto=format&fit=crop&q=80" alt="Interior Philosophy"></div>
+  <div class="band-overlay"></div>
+  <div class="band-content">
+    <div class="sec-tag rv">Our Philosophy</div>
+    <h2 class="band-h2 rv">Beauty is not<br>a luxury — it's a<br><em>necessity.</em></h2>
+    <p class="band-p rv">Great design shapes how you feel, how you work, and how you live. We craft spaces that move you — every single day.</p>
+    <div class="band-nums rv">
+      <div><div class="bn-num" data-count="500">0</div><div class="bn-lbl">Happy Clients</div></div>
+      <div><div class="bn-num" data-count="15">0</div><div class="bn-lbl">Design Awards</div></div>
+      <div><div class="bn-num" data-count="8">0</div><div class="bn-lbl">Cities Served</div></div>
+    </div>
+  </div>
+  <div class="band-imgs rr">
+    <div class="bi"><img src="https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?w=400&auto=format&fit=crop&q=80" alt=""></div>
+    <div class="bi"><img src="https://images.unsplash.com/photo-1616137422495-1e9e46e2aa1e?w=400&auto=format&fit=crop&q=80" alt=""></div>
+  </div>
+</div>
+
+<div class="sec-divider"></div>
+
+<!-- ══════════ ABOUT ══════════ -->
+<section class="sec about-sec" id="about">
+  <div class="sec-watermark" style="left:-2rem;top:50%;transform:translateY(-50%)">02</div>
+  <div class="about-imgs rl">
+    <img src="https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=800&auto=format&fit=crop&q=80" alt="CS Interio Studio" class="ai-main">
+    <img src="https://images.unsplash.com/photo-1600566753376-12c8ab7fb75b?w=500&auto=format&fit=crop&q=80" alt="Design Detail" class="ai-sm">
+    <div class="ai-gv"></div><div class="ai-gh"></div>
+    <div class="ai-badge"><div class="ai-bn">12+</div><div class="ai-bt">Years of<br>Excellence</div></div>
+  </div>
+  <div class="rr">
+    <div class="sec-tag">Our Studio</div>
+    <h2 class="sec-h2">Crafting <em>Spaces</em><br>Since 2012</h2>
+    <blockquote class="about-quote">"We don't just design rooms — we design emotions, memories, and the moments that define your life."</blockquote>
+    <p class="about-txt">CS Interio was born from a simple belief: that exceptional spaces have the power to transform lives. Founded in 2012 by a team of passionate designers and architects, we've grown into one of the most trusted studios in South India.</p>
+    <p class="about-txt">Every project begins with deep listening — understanding not just what you want your space to look like, but how you want it to feel. That human-first approach is what sets us apart.</p>
+    <div class="chips">
+      <div class="chip">Best Interior Studio 2023</div>
+      <div class="chip">Design Excellence Award</div>
+      <div class="chip">ISO Certified</div>
+      <div class="chip">Top 50 Designers India</div>
+    </div>
+  </div>
+</section>
+
+<div class="sec-divider"></div>
+
+<!-- ══════════ PROCESS ══════════ -->
+<section class="sec process-sec" id="process">
+  <div class="sec-watermark" style="right:-2rem;top:1rem;">03</div>
+  <div class="sec-head">
+    <div class="rl">
+      <div class="sec-tag">How We Work</div>
+      <h2 class="sec-h2">A Process Built<br>for <em>Perfection</em></h2>
+    </div>
+    <p class="sec-p rr">Our meticulous 4-step process ensures every project exceeds expectations — delivered on time, on budget, and beyond imagination.</p>
+  </div>
+  <div class="process-grid" id="processGrid">
+    <div class="ps rv"><div class="ps-step">Step One</div><div class="ps-num">01</div><div class="ps-title">Discovery & Consultation</div><div class="ps-desc">We dive deep into your vision, lifestyle, budget, and timeline. This is where your story begins.</div></div>
+    <div class="ps rv"><div class="ps-step">Step Two</div><div class="ps-num">02</div><div class="ps-title">Concept & Design</div><div class="ps-desc">Mood boards, 3D renders, and floor plans bring your vision to life before a single nail is hammered.</div></div>
+    <div class="ps rv"><div class="ps-step">Step Three</div><div class="ps-num">03</div><div class="ps-title">Execution & Build</div><div class="ps-desc">Master craftsmen bring the design to reality with precision and rigorous quality control at every stage.</div></div>
+    <div class="ps rv"><div class="ps-step">Step Four</div><div class="ps-num">04</div><div class="ps-title">Reveal & Handover</div><div class="ps-desc">The moment of magic — we walk you through your transformed space and ensure everything is flawless.</div></div>
+  </div>
+</section>
+
+<div class="sec-divider"></div>
+
+<!-- ══════════ GALLERY ══════════ -->
+<section class="sec gallery-sec" id="gallery">
+  <div class="sec-watermark" style="left:-2rem;top:1rem;">04</div>
+  <div class="sec-head">
+    <div class="rl">
+      <div class="sec-tag">Portfolio</div>
+      <h2 class="sec-h2">Selected<br><em>Works</em></h2>
+    </div>
+    <p class="sec-p rr">A curated selection of our finest residential, commercial, and hospitality projects — each one a story of transformation.</p>
+  </div>
+  <div class="mosaic rv">
+    <div class="gi"><img src="https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?w=800&auto=format&fit=crop&q=80" alt="Modern Living Room"><div class="gi-lbl">Modern Living Room</div></div>
+    <div class="gi"><img src="https://images.unsplash.com/photo-1616137422495-1e9e46e2aa1e?w=500&auto=format&fit=crop&q=80" alt="Luxury Bedroom"><div class="gi-lbl">Luxury Bedroom Suite</div></div>
+    <div class="gi"><img src="https://images.unsplash.com/photo-1613977257365-aaae5a9817ff?w=600&auto=format&fit=crop&q=80" alt="Villa Interior"><div class="gi-lbl">Villa Interior</div></div>
+    <div class="gi"><img src="https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?w=500&auto=format&fit=crop&q=80" alt="Open Kitchen"><div class="gi-lbl">Open Kitchen</div></div>
+    <div class="gi"><img src="https://images.unsplash.com/photo-1583847268964-b28dc8f51f92?w=400&auto=format&fit=crop&q=80" alt="Lounge"><div class="gi-lbl">Lounge Area</div></div>
+    <div class="gi"><img src="https://images.unsplash.com/photo-1497366216548-37526070297c?w=600&auto=format&fit=crop&q=80" alt="Corporate Office"><div class="gi-lbl">Corporate Office</div></div>
+    <div class="gi"><img src="https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=700&auto=format&fit=crop&q=80" alt="Dining Space"><div class="gi-lbl">Dining Space</div></div>
+    <div class="gi"><img src="https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=600&auto=format&fit=crop&q=80" alt="Modular Kitchen"><div class="gi-lbl">Modular Kitchen</div></div>
+  </div>
+</section>
+
+<!-- ══════════ TESTIMONIALS ══════════ -->
+<section class="sec testi-sec" id="testimonials">
+  <div class="sec-head">
+    <div class="rl">
+      <div class="sec-tag">Client Stories</div>
+      <h2 class="sec-h2">Words From Our<br><em>Happy Clients</em></h2>
+    </div>
+    <p class="sec-p rr">Don't take our word for it — hear from homeowners, business leaders, and developers who've experienced the CS Interio difference.</p>
+  </div>
+  <div class="testi-wrap">
+    <div class="testi-track">
+      <div class="tc"><div class="tc-qm">"</div><div class="tc-stars">★★★★★</div><p class="tc-text">CS Interio completely reimagined our corporate HQ. They understood our brand ethos and created a space that energizes our 200-person team daily.</p><div class="tc-auth"><div class="tc-av">RK</div><div><div class="tc-name">Rajesh Kumar</div><div class="tc-role">CEO, TechVenture India — Hyderabad</div></div></div></div>
+      <div class="tc"><div class="tc-qm">"</div><div class="tc-stars">★★★★★</div><p class="tc-text">The modular kitchen they designed is breathtaking. Every corner optimized, every finish premium. I cook with joy every single day. Worth every rupee.</p><div class="tc-auth"><div class="tc-av">PS</div><div><div class="tc-name">Priya Sharma</div><div class="tc-role">Homeowner — Bangalore</div></div></div></div>
+      <div class="tc"><div class="tc-qm">"</div><div class="tc-stars">★★★★★</div><p class="tc-text">Our 6000 sqft villa looks like it belongs in an architecture magazine. CS Interio's attention to detail and artisanal quality is genuinely unmatched.</p><div class="tc-auth"><div class="tc-av">AM</div><div><div class="tc-name">Arjun Mehta</div><div class="tc-role">Villa Owner — Jubilee Hills</div></div></div></div>
+      <div class="tc"><div class="tc-qm">"</div><div class="tc-stars">★★★★★</div><p class="tc-text">They transformed our restaurant into a destination. Footfall tripled in the first month of reopening. The design tells our brand story perfectly.</p><div class="tc-auth"><div class="tc-av">SN</div><div><div class="tc-name">Sneha Nair</div><div class="tc-role">Restaurant Owner — Chennai</div></div></div></div>
+      <div class="tc"><div class="tc-qm">"</div><div class="tc-stars">★★★★★</div><p class="tc-text">From first consultation to final handover, CS Interio was a pleasure to work with. Our apartment is now our favorite place in the world.</p><div class="tc-auth"><div class="tc-av">VR</div><div><div class="tc-name">Vikram Reddy</div><div class="tc-role">Apartment Owner — Gachibowli</div></div></div></div>
+      <!-- duplicate for seamless loop -->
+      <div class="tc"><div class="tc-qm">"</div><div class="tc-stars">★★★★★</div><p class="tc-text">CS Interio completely reimagined our corporate HQ. They understood our brand ethos and created a space that energizes our 200-person team daily.</p><div class="tc-auth"><div class="tc-av">RK</div><div><div class="tc-name">Rajesh Kumar</div><div class="tc-role">CEO, TechVenture India — Hyderabad</div></div></div></div>
+      <div class="tc"><div class="tc-qm">"</div><div class="tc-stars">★★★★★</div><p class="tc-text">The modular kitchen they designed is breathtaking. Every corner optimized, every finish premium. I cook with joy every single day. Worth every rupee.</p><div class="tc-auth"><div class="tc-av">PS</div><div><div class="tc-name">Priya Sharma</div><div class="tc-role">Homeowner — Bangalore</div></div></div></div>
+      <div class="tc"><div class="tc-qm">"</div><div class="tc-stars">★★★★★</div><p class="tc-text">Our 6000 sqft villa looks like it belongs in an architecture magazine. CS Interio's attention to detail and artisanal quality is genuinely unmatched.</p><div class="tc-auth"><div class="tc-av">AM</div><div><div class="tc-name">Arjun Mehta</div><div class="tc-role">Villa Owner — Jubilee Hills</div></div></div></div>
+      <div class="tc"><div class="tc-qm">"</div><div class="tc-stars">★★★★★</div><p class="tc-text">They transformed our restaurant into a destination. Footfall tripled in the first month of reopening. The design tells our brand story perfectly.</p><div class="tc-auth"><div class="tc-av">SN</div><div><div class="tc-name">Sneha Nair</div><div class="tc-role">Restaurant Owner — Chennai</div></div></div></div>
+      <div class="tc"><div class="tc-qm">"</div><div class="tc-stars">★★★★★</div><p class="tc-text">From first consultation to final handover, CS Interio was a pleasure to work with. Our apartment is now our favorite place in the world.</p><div class="tc-auth"><div class="tc-av">VR</div><div><div class="tc-name">Vikram Reddy</div><div class="tc-role">Apartment Owner — Gachibowli</div></div></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════ COST ESTIMATOR ══════════ -->
+<section class="sec estimator-sec" id="estimator">
+  <div class="sec-head">
+    <div class="rl">
+      <div class="sec-tag">Smart Calculator</div>
+      <h2 class="sec-h2">Estimate Your<br><em>Project Cost</em></h2>
+    </div>
+    <p class="sec-p rr">Get an instant, detailed cost estimate for your interior project in just 4 simple steps. No commitment needed — just clarity.</p>
+  </div>
+
+  <div class="calc-layout rv">
+    <!-- Main calculator -->
+    <div>
+      <!-- Progress bar -->
+      <div class="calc-progress">
+        <div class="cp-step active" id="cp1">
+          <div class="cp-dot">1</div>
+          <div class="cp-label">Service</div>
+        </div>
+        <div class="cp-line"><div class="cp-line-fill" id="line1"></div></div>
+        <div class="cp-step" id="cp2">
+          <div class="cp-dot">2</div>
+          <div class="cp-label">Area & Quality</div>
+        </div>
+        <div class="cp-line"><div class="cp-line-fill" id="line2"></div></div>
+        <div class="cp-step" id="cp3">
+          <div class="cp-dot">3</div>
+          <div class="cp-label">Add-ons</div>
+        </div>
+        <div class="cp-line"><div class="cp-line-fill" id="line3"></div></div>
+        <div class="cp-step" id="cp4">
+          <div class="cp-dot">4</div>
+          <div class="cp-label">Estimate</div>
+        </div>
+      </div>
+
+      <!-- Live estimate bar -->
+      <div class="live-bar">
+        <div>
+          <div class="lb-label">Live Estimate</div>
+          <div class="lb-note">Updates as you make selections</div>
+        </div>
+        <div class="lb-est" id="liveEst">Select a service to begin</div>
+      </div>
+
+      <!-- STEP 1: Service Selection -->
+      <div class="calc-panel active" id="panel1">
+        <div class="calc-panel-title">Choose your <em>service type</em></div>
+        <p class="calc-panel-sub">Select the primary service you need. You can add more specific requirements in the next steps.</p>
+        <div class="svc-cards">
+          <div class="svc-card" data-service="office" data-rate="1800" data-min="1200" data-max="3500" onclick="selectService(this)">
+            <span class="svc-card-icon">🏢</span>
+            <div class="svc-card-name">Office Space</div>
+            <div class="svc-card-rate">₹1,200 – ₹3,500 / sq.ft</div>
+            <div class="svc-card-check">✓</div>
+          </div>
+          <div class="svc-card" data-service="house" data-rate="1600" data-min="1000" data-max="3000" onclick="selectService(this)">
+            <span class="svc-card-icon">🏠</span>
+            <div class="svc-card-name">Individual House</div>
+            <div class="svc-card-rate">₹1,000 – ₹3,000 / sq.ft</div>
+            <div class="svc-card-check">✓</div>
+          </div>
+          <div class="svc-card" data-service="villa" data-rate="2500" data-min="2000" data-max="6000" onclick="selectService(this)">
+            <span class="svc-card-icon">🏰</span>
+            <div class="svc-card-name">Luxury Villa</div>
+            <div class="svc-card-rate">₹2,000 – ₹6,000 / sq.ft</div>
+            <div class="svc-card-check">✓</div>
+          </div>
+          <div class="svc-card" data-service="commercial" data-rate="2000" data-min="1500" data-max="4500" onclick="selectService(this)">
+            <span class="svc-card-icon">🏪</span>
+            <div class="svc-card-name">Commercial Space</div>
+            <div class="svc-card-rate">₹1,500 – ₹4,500 / sq.ft</div>
+            <div class="svc-card-check">✓</div>
+          </div>
+          <div class="svc-card" data-service="kitchen" data-rate="120000" data-min="80000" data-max="350000" onclick="selectService(this)">
+            <span class="svc-card-icon">🍳</span>
+            <div class="svc-card-name">Modular Kitchen</div>
+            <div class="svc-card-rate">₹80,000 – ₹3,50,000</div>
+            <div class="svc-card-check">✓</div>
+          </div>
+          <div class="svc-card" data-service="custom" data-rate="1400" data-min="900" data-max="2800" onclick="selectService(this)">
+            <span class="svc-card-icon">✨</span>
+            <div class="svc-card-name">Custom Interiors</div>
+            <div class="svc-card-rate">₹900 – ₹2,800 / sq.ft</div>
+            <div class="svc-card-check">✓</div>
+          </div>
+        </div>
+        <div class="calc-nav">
+          <div></div>
+          <button class="calc-next" id="next1" onclick="goStep(2)" disabled><span>Next: Area & Quality →</span></button>
+        </div>
+      </div>
+
+      <!-- STEP 2: Area & Quality -->
+      <div class="calc-panel" id="panel2">
+        <div class="calc-panel-title">Enter <em>area</em> & choose quality</div>
+        <p class="calc-panel-sub">Tell us the size of your space and your preferred finish quality to get a precise estimate.</p>
+
+        <div class="calc-inputs-grid">
+          <div class="calc-inp-group" id="areaGroup">
+            <div class="calc-inp-label">Area (sq.ft)</div>
+            <input type="number" class="calc-inp" id="areaInput" placeholder="e.g. 1200" min="100" max="50000" oninput="updateCalc()">
+            <div class="range-wrap">
+              <input type="range" class="calc-range" id="areaRange" min="100" max="5000" value="1000" oninput="syncRange(this,'areaInput');updateCalc()">
+              <div class="range-labels"><span>100 sq.ft</span><span>5,000+ sq.ft</span></div>
+            </div>
+            <div class="calc-inp-hint" id="areaHint">Enter carpet area of the space</div>
+          </div>
+          <div class="calc-inp-group" id="roomGroup" style="display:none;">
+            <div class="calc-inp-label">Kitchen Size</div>
+            <div class="quality-opts" style="grid-template-columns:1fr;gap:.5rem;">
+              <div class="qopt selected" data-rooms="1" data-mult="1" onclick="selectRooms(this)">
+                <div class="qopt-name">Small (up to 8ft)</div>
+                <div class="qopt-desc">Up to 8 linear feet</div>
+                <div class="qopt-mult">Base price</div>
+              </div>
+              <div class="qopt" data-rooms="2" data-mult="1.5" onclick="selectRooms(this)">
+                <div class="qopt-name">Medium (8–12ft)</div>
+                <div class="qopt-desc">8 to 12 linear feet</div>
+                <div class="qopt-mult">+50%</div>
+              </div>
+              <div class="qopt" data-rooms="3" data-mult="2" onclick="selectRooms(this)">
+                <div class="qopt-name">Large (12ft+)</div>
+                <div class="qopt-desc">Over 12 linear feet</div>
+                <div class="qopt-mult">+100%</div>
+              </div>
+            </div>
+          </div>
+          <div class="calc-inp-group">
+            <div class="calc-inp-label">Number of Rooms / Zones</div>
+            <input type="number" class="calc-inp" id="roomInput" placeholder="e.g. 3" min="1" max="50" value="3" oninput="updateCalc()">
+            <div class="calc-inp-hint">Bedrooms, halls, offices, etc.</div>
+          </div>
+        </div>
+
+        <div class="calc-inp-label" style="margin-bottom:.8rem;">Finish Quality</div>
+        <div class="quality-opts" id="qualityOpts">
+          <div class="qopt selected" data-quality="standard" data-mult="0.75" onclick="selectQuality(this)">
+            <div class="qopt-name">Standard</div>
+            <div class="qopt-desc">Quality materials, clean finish, functional design</div>
+            <div class="qopt-mult">Base rate</div>
+          </div>
+          <div class="qopt" data-quality="premium" data-mult="1.0" onclick="selectQuality(this)">
+            <div class="qopt-name">Premium</div>
+            <div class="qopt-desc">Imported materials, detailed craftsmanship, designer elements</div>
+            <div class="qopt-mult">+33%</div>
+          </div>
+          <div class="qopt" data-quality="luxury" data-mult="1.4" onclick="selectQuality(this)">
+            <div class="qopt-name">Luxury</div>
+            <div class="qopt-desc">World-class materials, bespoke furniture, premium brands</div>
+            <div class="qopt-mult">+87%</div>
+          </div>
+        </div>
+
+        <div class="calc-nav">
+          <button class="calc-back" onclick="goStep(1)">← Back</button>
+          <button class="calc-next" onclick="goStep(3)"><span>Next: Add-ons →</span></button>
+        </div>
+      </div>
+
+      <!-- STEP 3: Add-ons -->
+      <div class="calc-panel" id="panel3">
+        <div class="calc-panel-title">Select <em>add-ons</em> & extras</div>
+        <p class="calc-panel-sub">Enhance your space with these optional services. Each adds tremendous value and character to your interiors.</p>
+        <div class="addons-grid" id="addonsGrid">
+          <div class="addon" data-addon="3d" data-cost="25000" onclick="toggleAddon(this)">
+            <div class="addon-cb"><span class="addon-cb-tick">✓</span></div>
+            <div class="addon-info">
+              <div class="addon-name">3D Visualization</div>
+              <div class="addon-cost">₹25,000 flat</div>
+            </div>
+          </div>
+          <div class="addon" data-addon="falseceil" data-cost-type="sqft" data-cost="120" onclick="toggleAddon(this)">
+            <div class="addon-cb"><span class="addon-cb-tick">✓</span></div>
+            <div class="addon-info">
+              <div class="addon-name">False Ceiling & Lighting</div>
+              <div class="addon-cost">₹120 / sq.ft extra</div>
+            </div>
+          </div>
+          <div class="addon" data-addon="wardrobe" data-cost="45000" onclick="toggleAddon(this)">
+            <div class="addon-cb"><span class="addon-cb-tick">✓</span></div>
+            <div class="addon-info">
+              <div class="addon-name">Wardrobes / Storage</div>
+              <div class="addon-cost">From ₹45,000</div>
+            </div>
+          </div>
+          <div class="addon" data-addon="flooring" data-cost-type="sqft" data-cost="85" onclick="toggleAddon(this)">
+            <div class="addon-cb"><span class="addon-cb-tick">✓</span></div>
+            <div class="addon-info">
+              <div class="addon-name">Premium Flooring</div>
+              <div class="addon-cost">₹85 / sq.ft extra</div>
+            </div>
+          </div>
+          <div class="addon" data-addon="smart" data-cost="60000" onclick="toggleAddon(this)">
+            <div class="addon-cb"><span class="addon-cb-tick">✓</span></div>
+            <div class="addon-info">
+              <div class="addon-name">Smart Home Automation</div>
+              <div class="addon-cost">From ₹60,000</div>
+            </div>
+          </div>
+          <div class="addon" data-addon="landscape" data-cost="35000" onclick="toggleAddon(this)">
+            <div class="addon-cb"><span class="addon-cb-tick">✓</span></div>
+            <div class="addon-info">
+              <div class="addon-name">Landscaping / Balcony</div>
+              <div class="addon-cost">From ₹35,000</div>
+            </div>
+          </div>
+          <div class="addon" data-addon="painting" data-cost-type="sqft" data-cost="45" onclick="toggleAddon(this)">
+            <div class="addon-cb"><span class="addon-cb-tick">✓</span></div>
+            <div class="addon-info">
+              <div class="addon-name">Decorative Wall Painting</div>
+              <div class="addon-cost">₹45 / sq.ft extra</div>
+            </div>
+          </div>
+          <div class="addon" data-addon="furniture" data-cost="80000" onclick="toggleAddon(this)">
+            <div class="addon-cb"><span class="addon-cb-tick">✓</span></div>
+            <div class="addon-info">
+              <div class="addon-name">Custom Furniture</div>
+              <div class="addon-cost">From ₹80,000</div>
+            </div>
+          </div>
+        </div>
+        <div class="calc-nav">
+          <button class="calc-back" onclick="goStep(2)">← Back</button>
+          <button class="calc-next" onclick="goStep(4)"><span>Get My Estimate →</span></button>
+        </div>
+      </div>
+
+      <!-- STEP 4: Result -->
+      <div class="calc-panel" id="panel4">
+        <div class="result-panel">
+          <div class="result-title">Your <em>Cost Estimate</em></div>
+          <div class="result-breakdown" id="resultBreakdown"></div>
+          <div class="result-total">
+            <div>
+              <div class="rt-label">Estimated Total Range</div>
+              <div style="font-size:.72rem;color:var(--muted);margin-top:.2rem;">Inclusive of materials, labour & supervision</div>
+            </div>
+            <div class="rt-range" id="totalRange">—</div>
+          </div>
+          <div class="result-note">
+            ⚠️ This is a preliminary estimate based on average market rates in Hyderabad. Final pricing depends on site conditions, specific material choices, and custom requirements. We recommend a free on-site consultation for an accurate quote.
+          </div>
+          <div class="result-btns">
+            <a href="#contact" class="calc-next" style="text-decoration:none;display:inline-block;padding:.85rem 2rem;" onclick="prefillContact()"><span>Book Free Consultation →</span></a>
+            <button class="calc-back" onclick="goStep(1);resetCalc()">Recalculate</button>
+            <button class="calc-back" onclick="printEstimate()">🖨 Print / Save PDF</button>
+          </div>
+        </div>
+        <div class="calc-nav" style="border:none;padding-top:0;">
+          <div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Sidebar -->
+    <div class="calc-sidebar">
+      <div class="sidebar-card">
+        <div class="sc-hd">Why Use Our Calculator?</div>
+        <div class="tip-list">
+          <div class="tip">
+            <div class="tip-icon">📊</div>
+            <div class="tip-text"><strong>Instant Estimate</strong>Get a realistic range in seconds without waiting for a callback.</div>
+          </div>
+          <div class="tip">
+            <div class="tip-icon">🎯</div>
+            <div class="tip-text"><strong>Market-Accurate Rates</strong>Based on current Hyderabad material and labour costs.</div>
+          </div>
+          <div class="tip">
+            <div class="tip-icon">🔒</div>
+            <div class="tip-text"><strong>No Obligation</strong>Estimate is free. No personal details needed at this stage.</div>
+          </div>
+          <div class="tip">
+            <div class="tip-icon">✅</div>
+            <div class="tip-text"><strong>Transparent Pricing</strong>We believe you should know what to expect before we meet.</div>
+          </div>
+        </div>
+
+        <!-- Live selection summary -->
+        <div class="sel-summary" id="selSummary" style="display:none;">
+          <div class="sec-tag" style="margin-bottom:1rem;">Your Selections</div>
+          <div class="ss-row"><span>Service</span><span id="ss-svc">—</span></div>
+          <div class="ss-row"><span>Area / Size</span><span id="ss-area">—</span></div>
+          <div class="ss-row"><span>Quality</span><span id="ss-qual">—</span></div>
+          <div class="ss-row"><span>Add-ons</span><span id="ss-addons">None</span></div>
+          <div class="ss-est">
+            <div class="ss-est-lbl">Estimated Range</div>
+            <div class="ss-est-val" id="ss-estval">—</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════ CONTACT ══════════ -->
+<section class="sec contact-sec" id="contact">
+  <div>
+    <div class="sec-tag rl">Let's Connect</div>
+    <h2 class="sec-h2 rl">Begin Your<br><em>Dream Project</em><br>Today</h2>
+    <p class="sec-p rl" style="margin-top:1.3rem;">Our design consultants are ready to discuss your vision. Every great space begins with a conversation.</p>
+    <div class="ci-items rl">
+      <div class="ci"><div class="ci-icon">📍</div><div><div class="ci-lbl">Studio Address</div><div class="ci-val">CS Interio, 4th Floor, Design Hub<br>Banjara Hills, Hyderabad — 500034</div></div></div>
+      <div class="ci"><div class="ci-icon">📞</div><div><div class="ci-lbl">Phone</div><div class="ci-val">+91 9553774933</div></div></div>
+      <div class="ci"><div class="ci-icon">✉️</div><div><div class="ci-lbl">Email</div><div class="ci-val">info@csinterio.com</div></div></div>
+      <div class="ci"><div class="ci-icon">🕐</div><div><div class="ci-lbl">Studio Hours</div><div class="ci-val">Mon – Sat: 10:00 AM – 7:00 PM</div></div></div>
+    </div>
+  </div>
+  <form class="cform rr" onsubmit="submitForm(event)">
+    <div class="frow">
+      <div class="fg"><label>First Name</label><input type="text" placeholder="Rahul" required></div>
+      <div class="fg"><label>Last Name</label><input type="text" placeholder="Verma" required></div>
+    </div>
+    <div class="fg"><label>Email Address</label><input type="email" placeholder="rahul@example.com" required></div>
+    <div class="fg"><label>Phone Number</label><input type="tel" placeholder="+91 9XXXXXXXXX"></div>
+    <div class="fg">
+      <label>Service Required</label>
+      <select>
+        <option value="">Select a service...</option>
+        <option>Office Space Design</option>
+        <option>Individual House Interior</option>
+        <option>Luxury Villa Design</option>
+        <option>Commercial Space</option>
+        <option>Modular Kitchen</option>
+        <option>False Ceiling & Lighting</option>
+        <option>Complete Home Interior</option>
+      </select>
+    </div>
+    <div class="fg">
+      <label>Approximate Budget</label>
+      <select>
+        <option value="">Select budget range</option>
+        <option>₹5L – ₹15L</option>
+        <option>₹15L – ₹30L</option>
+        <option>₹30L – ₹60L</option>
+        <option>₹60L – ₹1Cr</option>
+        <option>₹1Cr+</option>
+      </select>
+    </div>
+    <div class="fg"><label>Your Vision</label><textarea id="visionField" placeholder="Describe your dream space — style, size, timeline, and any inspiration you have in mind..."></textarea></div>
+    <button type="submit" class="sbtn"><span id="sbtnText">Send Enquiry →</span></button>
+
+    <div class="wa-form-divider"><span>or connect instantly on</span></div>
+
+    <button type="button" class="wa-form-btn" onclick="sendWhatsApp()">
+      <svg viewBox="0 0 24 24" fill="white" xmlns="http://www.w3.org/2000/svg">
+        <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+      </svg>
+      Chat on WhatsApp
+    </button>
+    <p class="wa-form-note">💬 Get instant reply · Typically responds within 5 minutes</p>
+  </form>
+</section>
+
+<!-- ══════════ FOOTER ══════════ -->
+<footer>
+  <div class="footer-grid">
+    <div>
+      <div class="fl">CS <span>Interio</span></div>
+      <p class="ft">Crafting extraordinary spaces for those who appreciate the art of living beautifully. Since 2012.</p>
+      <div class="fsoc">
+        <!-- LinkedIn -->
+        <a href="#" class="fsb" style="background:#0a66c2;" title="LinkedIn" aria-label="LinkedIn">
+          <svg viewBox="0 0 24 24" fill="white" xmlns="http://www.w3.org/2000/svg">
+            <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
+          </svg>
+        </a>
+        <!-- Instagram -->
+        <a href="#" class="fsb" style="background:linear-gradient(135deg,#f09433,#e6683c,#dc2743,#cc2366,#bc1888);" title="Instagram" aria-label="Instagram">
+          <svg viewBox="0 0 24 24" fill="white" xmlns="http://www.w3.org/2000/svg">
+            <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/>
+          </svg>
+        </a>
+        <!-- Facebook -->
+        <a href="#" class="fsb" style="background:#1877f2;" title="Facebook" aria-label="Facebook">
+          <svg viewBox="0 0 24 24" fill="white" xmlns="http://www.w3.org/2000/svg">
+            <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+          </svg>
+        </a>
+        <!-- YouTube -->
+        <a href="#" class="fsb" style="background:#ff0000;" title="YouTube" aria-label="YouTube">
+          <svg viewBox="0 0 24 24" fill="white" xmlns="http://www.w3.org/2000/svg">
+            <path d="M23.498 6.186a3.016 3.016 0 00-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 00.502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 002.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 002.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
+          </svg>
+        </a>
+        <!-- Pinterest -->
+        <a href="#" class="fsb" style="background:#e60023;" title="Pinterest" aria-label="Pinterest">
+          <svg viewBox="0 0 24 24" fill="white" xmlns="http://www.w3.org/2000/svg">
+            <path d="M12 0C5.373 0 0 5.372 0 12c0 5.084 3.163 9.426 7.627 11.174-.105-.949-.2-2.405.042-3.441.218-.937 1.407-5.965 1.407-5.965s-.359-.719-.359-1.782c0-1.668.967-2.914 2.171-2.914 1.023 0 1.518.769 1.518 1.69 0 1.029-.655 2.568-.994 3.995-.283 1.194.599 2.169 1.777 2.169 2.133 0 3.772-2.249 3.772-5.495 0-2.873-2.064-4.882-5.012-4.882-3.414 0-5.418 2.561-5.418 5.207 0 1.031.397 2.138.893 2.738a.36.36 0 01.083.345l-.333 1.36c-.053.22-.174.267-.402.161-1.499-.698-2.436-2.889-2.436-4.649 0-3.785 2.75-7.262 7.929-7.262 4.163 0 7.398 2.967 7.398 6.931 0 4.136-2.607 7.464-6.227 7.464-1.216 0-2.359-.632-2.75-1.378l-.748 2.853c-.271 1.043-1.002 2.35-1.492 3.146C9.57 23.812 10.763 24 12 24c6.627 0 12-5.373 12-12S18.627 0 12 0z"/>
+          </svg>
+        </a>
+        <!-- WhatsApp -->
+        <a href="https://wa.me/919876543210" target="_blank" class="fsb" style="background:linear-gradient(135deg,#25d366,#128c7e);" title="WhatsApp" aria-label="WhatsApp">
+          <svg viewBox="0 0 24 24" fill="white" xmlns="http://www.w3.org/2000/svg">
+            <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+          </svg>
+        </a>
+      </div>
+    </div>
+    <div class="footer-col"><h4>Services</h4><ul><li><a href="#">Office Spaces</a></li><li><a href="#">Individual Houses</a></li><li><a href="#">Luxury Villas</a></li><li><a href="#">Commercial Spaces</a></li><li><a href="#">Modular Kitchens</a></li><li><a href="#">Custom Interiors</a></li></ul></div>
+    <div class="footer-col"><h4>Studio</h4><ul><li><a href="#">About Us</a></li><li><a href="#">Our Team</a></li><li><a href="#">Awards</a></li><li><a href="#">Careers</a></li><li><a href="#">Press</a></li><li><a href="#">Blog</a></li></ul></div>
+    <div class="footer-col"><h4>Connect</h4><ul><li><a href="#">Free Consultation</a></li><li><a href="#">3D Visualization</a></li><li><a href="#">Project Gallery</a></li><li><a href="#">Cost Calculator</a></li><li><a href="#">Privacy Policy</a></li><li><a href="#">Contact</a></li></ul></div>
+  </div>
+  <div class="footer-btm">
+    <span>© 2024 CS Interio. All rights reserved.</span>
+    <span>Designed with passion · <a href="#">Hyderabad, India</a></span>
+  </div>
+</footer>
+
+<!-- ══════════ WHATSAPP FLOATING WIDGET ══════════ -->
+<div class="wa-float" id="waFloat">
+  <!-- Banner popup -->
+  <div class="wa-banner" id="waBanner">
+    <div class="wa-banner-dot"></div>
+    <div class="wa-banner-text">
+      Start Chat
+      <span>We reply within 5 mins ⚡</span>
+    </div>
+    <button class="wa-banner-close" onclick="closeBanner()" aria-label="Close">✕</button>
+  </div>
+  <!-- WhatsApp main button -->
+  <a class="wa-btn" href="https://wa.me/919553774933?text=Hi%20CS%20Interio!%20I%27m%20interested%20in%20your%20interior%20design%20services.%20Can%20you%20help%20me?" target="_blank" rel="noopener" aria-label="Chat on WhatsApp" title="Chat on WhatsApp" id="waMainBtn">
+    <svg viewBox="0 0 24 24" fill="white" xmlns="http://www.w3.org/2000/svg">
+      <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+    </svg>
+  </a>
+</div>
+
+<script>
+/* ════════════════════════════════════════
+   PRELOADER
+════════════════════════════════════════ */
+const plBar = document.getElementById('plBar');
+const plPct = document.getElementById('plPct');
+const preloader = document.getElementById('preloader');
+let progress = 0;
+const plInterval = setInterval(() => {
+  progress += Math.random() * 18;
+  if(progress > 100) progress = 100;
+  plBar.style.width = progress + '%';
+  plPct.textContent = Math.floor(progress) + '%';
+  if(progress >= 100){
+    clearInterval(plInterval);
+    setTimeout(() => {
+      preloader.classList.add('out');
+      setTimeout(() => preloader.style.display = 'none', 700);
+    }, 400);
+  }
+}, 80);
+
+/* ════════════════════════════════════════
+   PARTICLE CANVAS SYSTEM
+════════════════════════════════════════ */
+const canvas = document.getElementById('particleCanvas');
+const ctx = canvas ? canvas.getContext('2d') : null;
+let particles = [];
+
+function resizeCanvas(){
+  if(!canvas) return;
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+}
+resizeCanvas();
+window.addEventListener('resize', resizeCanvas, {passive:true});
+
+class Particle {
+  constructor(){this.reset();}
+  reset(){
+    this.x = Math.random() * window.innerWidth;
+    this.y = Math.random() * window.innerHeight;
+    this.size = Math.random() * 1.8 + 0.3;
+    this.speedX = (Math.random() - 0.5) * 0.35;
+    this.speedY = -Math.random() * 0.4 - 0.1;
+    this.opacity = Math.random() * 0.5 + 0.1;
+    this.life = 0;
+    this.maxLife = Math.random() * 300 + 200;
+  }
+  update(){
+    this.x += this.speedX;
+    this.y += this.speedY;
+    this.life++;
+    const ratio = this.life / this.maxLife;
+    if(ratio < 0.1) this.opacity = ratio * 5 * (Math.random() * 0.4 + 0.1);
+    else if(ratio > 0.8) this.opacity = (1-ratio) * 5 * 0.4;
+    if(this.life > this.maxLife) this.reset();
+  }
+  draw(){
+    if(!ctx) return;
+    ctx.beginPath();
+    ctx.arc(this.x, this.y, this.size, 0, Math.PI*2);
+    ctx.fillStyle = `rgba(201,168,76,${this.opacity})`;
+    ctx.fill();
+  }
+}
+
+if(ctx && window.matchMedia('(min-width:769px)').matches){
+  for(let i=0;i<80;i++) particles.push(new Particle());
+  function animateParticles(){
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    // Draw connection lines between close particles
+    for(let i=0;i<particles.length;i++){
+      for(let j=i+1;j<particles.length;j++){
+        const dx = particles[i].x - particles[j].x;
+        const dy = particles[i].y - particles[j].y;
+        const dist = Math.sqrt(dx*dx+dy*dy);
+        if(dist < 120){
+          ctx.beginPath();
+          ctx.moveTo(particles[i].x, particles[i].y);
+          ctx.lineTo(particles[j].x, particles[j].y);
+          ctx.strokeStyle = `rgba(201,168,76,${0.06*(1-dist/120)})`;
+          ctx.lineWidth = 0.5;
+          ctx.stroke();
+        }
+      }
+    }
+    particles.forEach(p => { p.update(); p.draw(); });
+    requestAnimationFrame(animateParticles);
+  }
+  animateParticles();
+}
+
+/* ════════════════════════════════════════
+   ENHANCED CURSOR with smooth lag
+════════════════════════════════════════ */
+const cur = document.getElementById('cur');
+const ring = document.getElementById('cur-ring');
+const trail = document.getElementById('cur-trail');
+let mouseX=0, mouseY=0, ringX=0, ringY=0, trailX=0, trailY=0;
+
+if(window.matchMedia('(hover:hover)').matches && cur){
+  document.addEventListener('mousemove', e => {
+    mouseX = e.clientX; mouseY = e.clientY;
+    cur.style.left = e.clientX+'px';
+    cur.style.top = e.clientY+'px';
+  });
+  function animateCursor(){
+    // Smooth ring follow
+    ringX += (mouseX - ringX) * 0.14;
+    ringY += (mouseY - ringY) * 0.14;
+    ring.style.left = ringX+'px';
+    ring.style.top = ringY+'px';
+    // Even slower trail
+    trailX += (mouseX - trailX) * 0.07;
+    trailY += (mouseY - trailY) * 0.07;
+    if(trail){ trail.style.left = trailX+'px'; trail.style.top = trailY+'px'; }
+    requestAnimationFrame(animateCursor);
+  }
+  animateCursor();
+  document.querySelectorAll('a,button,.sc,.gi,.svc-card,.qopt,.addon').forEach(el => {
+    el.addEventListener('mouseenter',()=>document.body.classList.add('hovering'));
+    el.addEventListener('mouseleave',()=>document.body.classList.remove('hovering'));
+  });
+  document.addEventListener('mousedown',()=>document.body.classList.add('clicking'));
+  document.addEventListener('mouseup',()=>document.body.classList.remove('clicking'));
+}
+
+/* ════════════════════════════════════════
+   SCROLL PROGRESS BAR
+════════════════════════════════════════ */
+const scrollProg = document.getElementById('scrollProgress');
+const backTop = document.getElementById('backTop');
+window.addEventListener('scroll', () => {
+  const total = document.documentElement.scrollHeight - window.innerHeight;
+  const pct = (window.scrollY / total) * 100;
+  if(scrollProg) scrollProg.style.width = pct + '%';
+  if(backTop) backTop.classList.toggle('show', window.scrollY > 500);
+}, {passive:true});
+
+if(backTop){
+  backTop.addEventListener('click', e => {
+    e.preventDefault();
+    window.scrollTo({top:0, behavior:'smooth'});
+  });
+}
+
+/* ── NAV SCROLL ── */
+const nav = document.getElementById('mainNav');
+window.addEventListener('scroll', () => {
+  nav.classList.toggle('scrolled', window.scrollY > 50);
+}, {passive:true});
+
+/* ── HAMBURGER / MOBILE NAV ── */
+const ham = document.getElementById('ham');
+const mNav = document.getElementById('mobileNav');
+ham.addEventListener('click', () => {
+  ham.classList.toggle('open');
+  mNav.classList.toggle('open');
+  document.body.style.overflow = mNav.classList.contains('open') ? 'hidden' : '';
+});
+function closeMenu(){
+  ham.classList.remove('open');
+  mNav.classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+/* ════════════════════════════════════════
+   SCROLL REVEAL — staggered with rs class
+════════════════════════════════════════ */
+const obs = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if(e.isIntersecting){
+      const parent = e.target.parentElement;
+      const siblings = [...parent.querySelectorAll('.rv,.rl,.rr,.rs')];
+      const idx = siblings.indexOf(e.target);
+      setTimeout(()=> e.target.classList.add('in'), idx * 110);
+      obs.unobserve(e.target);
+    }
+  });
+},{threshold:0.08});
+document.querySelectorAll('.rv,.rl,.rr,.rs').forEach(el => obs.observe(el));
+
+/* Process line animation */
+const processGrid = document.getElementById('processGrid');
+if(processGrid){
+  const pgObs = new IntersectionObserver(e => {
+    if(e[0].isIntersecting){ processGrid.classList.add('line-in'); pgObs.disconnect(); }
+  },{threshold:0.5});
+  pgObs.observe(processGrid);
+}
+
+/* ════════════════════════════════════════
+   MAGNETIC BUTTON EFFECT
+════════════════════════════════════════ */
+if(window.matchMedia('(hover:hover)').matches){
+  document.querySelectorAll('.mag-btn,.btn-gold,.calc-next,.sbtn').forEach(btn => {
+    btn.addEventListener('mousemove', e => {
+      const r = btn.getBoundingClientRect();
+      const x = e.clientX - r.left - r.width/2;
+      const y = e.clientY - r.top - r.height/2;
+      btn.style.transform = `translate(${x*0.22}px, ${y*0.22}px)`;
+    });
+    btn.addEventListener('mouseleave', () => {
+      btn.style.transform = '';
+    });
+  });
+}
+
+/* ── COUNTER ANIMATION ── */
+function countUp(el){
+  const target = +el.dataset.count;
+  const dur = 2200;
+  let start = null;
+  const step = ts => {
+    if(!start) start = ts;
+    const p = Math.min((ts-start)/dur, 1);
+    const ease = 1 - Math.pow(1-p, 4);
+    el.textContent = Math.floor(ease * target);
+    if(p < 1) requestAnimationFrame(step);
+    else el.textContent = target + (el.dataset.suffix||'');
+  };
+  requestAnimationFrame(step);
+}
+const cObs = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if(e.isIntersecting){ countUp(e.target); cObs.unobserve(e.target); }
+  });
+},{threshold:0.5});
+document.querySelectorAll('[data-count]').forEach(el => cObs.observe(el));
+
+/* ── PARALLAX BAND ── */
+const bandBg = document.getElementById('bandBg');
+const bandSec = document.getElementById('bandSec');
+function doParallax(){
+  if(!bandBg || !bandSec) return;
+  const r = bandSec.getBoundingClientRect();
+  const vh = window.innerHeight;
+  if(r.bottom > 0 && r.top < vh){
+    const p = (vh - r.top) / (vh + r.height);
+    bandBg.style.transform = `translateY(${(p - .5) * 70}px)`;
+  }
+}
+window.addEventListener('scroll', doParallax, {passive:true});
+
+/* ════════════════════════════════════════
+   3D TILT — Service Cards (enhanced)
+════════════════════════════════════════ */
+document.querySelectorAll('.sc').forEach(card => {
+  card.addEventListener('mousemove', e => {
+    const r = card.getBoundingClientRect();
+    const x = (e.clientX - r.left)/r.width - .5;
+    const y = (e.clientY - r.top)/r.height - .5;
+    card.style.transform = `perspective(900px) rotateY(${x*6}deg) rotateX(${-y*6}deg) scale(1.012)`;
+    card.style.zIndex = '3';
+  });
+  card.addEventListener('mouseleave', () => { card.style.transform=''; card.style.zIndex=''; });
+});
+
+/* ── 3D TILT — Gallery ── */
+document.querySelectorAll('.gi').forEach(item => {
+  item.addEventListener('mousemove', e => {
+    const r = item.getBoundingClientRect();
+    const x = (e.clientX - r.left)/r.width - .5;
+    const y = (e.clientY - r.top)/r.height - .5;
+    item.style.transform = `perspective(700px) rotateY(${x*5}deg) rotateX(${-y*5}deg)`;
+    item.style.zIndex = '3';
+  });
+  item.addEventListener('mouseleave', () => { item.style.transform=''; item.style.zIndex=''; });
+});
+
+/* ── MAGNETIC BUTTONS ── */
+document.querySelectorAll('.btn-gold,.sbtn').forEach(btn => {
+  btn.addEventListener('mousemove', e => {
+    const r = btn.getBoundingClientRect();
+    const x = (e.clientX - r.left - r.width/2) * .22;
+    const y = (e.clientY - r.top - r.height/2) * .22;
+    btn.style.transform = `translate(${x}px,${y}px)`;
+  });
+  btn.addEventListener('mouseleave', () => { btn.style.transform=''; });
+});
+
+/* ══════════════════════════════
+   COST ESTIMATOR ENGINE
+══════════════════════════════ */
+const calcState = {
+  step: 1,
+  service: null,
+  serviceName: '',
+  baseRate: 0,
+  baseMin: 0,
+  baseMax: 0,
+  area: 0,
+  rooms: 1,
+  roomMult: 1,
+  qualityMult: 0.75,
+  qualityName: 'Standard',
+  addons: [],
+  addonTotal: 0,
+  isKitchen: false
+};
+
+function formatINR(n){
+  if(n >= 10000000) return '₹' + (n/10000000).toFixed(1) + ' Cr';
+  if(n >= 100000) return '₹' + (n/100000).toFixed(1) + ' L';
+  return '₹' + n.toLocaleString('en-IN');
+}
+
+function selectService(el){
+  document.querySelectorAll('.svc-card').forEach(c => c.classList.remove('selected'));
+  el.classList.add('selected');
+  calcState.service = el.dataset.service;
+  calcState.serviceName = el.querySelector('.svc-card-name').textContent;
+  calcState.baseRate = parseFloat(el.dataset.rate);
+  calcState.baseMin = parseFloat(el.dataset.min);
+  calcState.baseMax = parseFloat(el.dataset.max);
+  calcState.isKitchen = el.dataset.service === 'kitchen';
+  document.getElementById('next1').disabled = false;
+  // show/hide area vs kitchen size
+  document.getElementById('areaGroup').style.display = calcState.isKitchen ? 'none' : '';
+  document.getElementById('roomGroup').style.display = calcState.isKitchen ? '' : 'none';
+  updateCalc();
+}
+
+function selectQuality(el){
+  document.querySelectorAll('.qopt').forEach(o => o.classList.remove('selected'));
+  el.classList.add('selected');
+  calcState.qualityMult = parseFloat(el.dataset.mult);
+  calcState.qualityName = el.querySelector('.qopt-name').textContent;
+  updateCalc();
+}
+
+function selectRooms(el){
+  el.closest('.quality-opts').querySelectorAll('.qopt').forEach(o=>o.classList.remove('selected'));
+  el.classList.add('selected');
+  calcState.roomMult = parseFloat(el.dataset.mult);
+  updateCalc();
+}
+
+function syncRange(rangeEl, inputId){
+  document.getElementById(inputId).value = rangeEl.value;
+}
+
+function toggleAddon(el){
+  el.classList.toggle('selected');
+  calcState.addons = [...document.querySelectorAll('.addon.selected')]
+    .map(a => ({
+      name: a.querySelector('.addon-name').textContent,
+      cost: parseFloat(a.dataset.cost)||0,
+      costType: a.dataset.costType||'flat'
+    }));
+  calcState.addonTotal = calcAddonTotal();
+  updateCalc();
+}
+
+function calcAddonTotal(){
+  const area = calcState.area||1000;
+  return calcState.addons.reduce((sum,a)=>{
+    return sum + (a.costType==='sqft' ? a.cost*area : a.cost);
+  },0);
+}
+
+function updateCalc(){
+  const areaEl = document.getElementById('areaInput');
+  const roomEl = document.getElementById('roomInput');
+  if(areaEl) {
+    calcState.area = parseFloat(areaEl.value)||0;
+    // sync range if within bounds
+    const r = document.getElementById('areaRange');
+    if(r && calcState.area<=5000) r.value = calcState.area;
+  }
+  if(roomEl) calcState.rooms = parseFloat(roomEl.value)||1;
+  calcState.addonTotal = calcAddonTotal();
+
+  let minEst=0, maxEst=0;
+  if(calcState.service){
+    if(calcState.isKitchen){
+      minEst = calcState.baseMin * calcState.qualityMult * calcState.roomMult;
+      maxEst = calcState.baseMax * calcState.qualityMult * calcState.roomMult;
+    } else {
+      const a = calcState.area||1000;
+      minEst = a * calcState.baseMin * calcState.qualityMult;
+      maxEst = a * calcState.baseMax * calcState.qualityMult;
+    }
+    minEst += calcState.addonTotal * 0.9;
+    maxEst += calcState.addonTotal * 1.2;
+  }
+
+  calcState.minEst = Math.round(minEst);
+  calcState.maxEst = Math.round(maxEst);
+
+  const liveEl = document.getElementById('liveEst');
+  if(calcState.service && (calcState.area>0||calcState.isKitchen)){
+    liveEl.textContent = formatINR(calcState.minEst)+' – '+formatINR(calcState.maxEst);
+  } else if(calcState.service){
+    liveEl.textContent = 'Enter area to see estimate';
+  }
+
+  // Update sidebar
+  updateSidebar();
+}
+
+function updateSidebar(){
+  if(!calcState.service) return;
+  const sum = document.getElementById('selSummary');
+  sum.style.display = '';
+  document.getElementById('ss-svc').textContent = calcState.serviceName;
+  document.getElementById('ss-area').textContent = calcState.isKitchen
+    ? `${document.querySelector('.quality-opts .qopt.selected')?.querySelector('.qopt-name')?.textContent||'Small'}`
+    : (calcState.area ? `${calcState.area} sq.ft` : '—');
+  document.getElementById('ss-qual').textContent = calcState.qualityName;
+  const adn = calcState.addons.length;
+  document.getElementById('ss-addons').textContent = adn > 0 ? `${adn} selected` : 'None';
+  if(calcState.area>0||calcState.isKitchen){
+    document.getElementById('ss-estval').textContent = formatINR(calcState.minEst)+' – '+formatINR(calcState.maxEst);
+  } else {
+    document.getElementById('ss-estval').textContent = '—';
+  }
+}
+
+function goStep(n){
+  // Validate step 2
+  if(n===3 && !calcState.isKitchen && calcState.area < 100){
+    const inp = document.getElementById('areaInput');
+    inp.style.borderColor='#e05';
+    inp.focus();
+    inp.placeholder='Please enter at least 100 sq.ft';
+    setTimeout(()=>{ inp.style.borderColor=''; },2000);
+    return;
+  }
+
+  calcState.step = n;
+  document.querySelectorAll('.calc-panel').forEach(p => p.classList.remove('active'));
+  document.getElementById('panel'+n).classList.add('active');
+
+  // Update progress steps
+  for(let i=1;i<=4;i++){
+    const s = document.getElementById('cp'+i);
+    const dot = s.querySelector('.cp-dot');
+    s.classList.remove('active','done');
+    if(i < n){ s.classList.add('done'); dot.textContent='✓'; }
+    else if(i===n){ s.classList.add('active'); dot.textContent=i; }
+    else { dot.textContent=i; }
+  }
+  // Fill connector lines
+  for(let i=1;i<=3;i++){
+    document.getElementById('line'+i).style.width = (n>i) ? '100%' : '0%';
+  }
+
+  if(n===4) buildResult();
+  window.scrollTo({top: document.getElementById('estimator').offsetTop - 80, behavior:'smooth'});
+}
+
+function buildResult(){
+  updateCalc();
+  const area = calcState.area;
+  const br = document.getElementById('resultBreakdown');
+  const rows = [];
+
+  // Base cost row
+  if(calcState.isKitchen){
+    const kMin = calcState.baseMin * calcState.qualityMult * calcState.roomMult;
+    const kMax = calcState.baseMax * calcState.qualityMult * calcState.roomMult;
+    rows.push({l:'Base Kitchen Cost ('+calcState.qualityName+')',v:formatINR(kMin)+' – '+formatINR(kMax)});
+  } else {
+    const baseMin = area * calcState.baseMin * calcState.qualityMult;
+    const baseMax = area * calcState.baseMax * calcState.qualityMult;
+    rows.push({l:`Base Cost (${area} sq.ft × ₹${(calcState.baseMin*calcState.qualityMult).toFixed(0)}–₹${(calcState.baseMax*calcState.qualityMult).toFixed(0)}/sq.ft)`,v:formatINR(baseMin)+' – '+formatINR(baseMax)});
+  }
+
+  rows.push({l:'Finish Quality',v:calcState.qualityName+' Tier'});
+  if(!calcState.isKitchen) rows.push({l:'Number of Rooms / Zones',v:calcState.rooms});
+
+  // Addons
+  if(calcState.addons.length>0){
+    calcState.addons.forEach(a=>{
+      const c = a.costType==='sqft' ? a.cost*area : a.cost;
+      rows.push({l:a.name, v:'+ '+formatINR(c)});
+    });
+  }
+
+  br.innerHTML = rows.map(r=>`
+    <div class="rb-row">
+      <span class="rb-label">${r.l}</span>
+      <span class="rb-val">${r.v}</span>
+    </div>`).join('');
+
+  document.getElementById('totalRange').textContent = formatINR(calcState.minEst)+' – '+formatINR(calcState.maxEst);
+}
+
+function resetCalc(){
+  calcState.service=null; calcState.serviceName=''; calcState.area=0; calcState.rooms=1;
+  calcState.qualityMult=0.75; calcState.qualityName='Standard'; calcState.roomMult=1;
+  calcState.addons=[]; calcState.addonTotal=0; calcState.isKitchen=false;
+  document.querySelectorAll('.svc-card').forEach(c=>c.classList.remove('selected'));
+  document.querySelectorAll('.addon').forEach(a=>a.classList.remove('selected'));
+  document.querySelectorAll('#qualityOpts .qopt').forEach((o,i)=>{ o.classList.toggle('selected',i===0); });
+  document.getElementById('areaInput').value='';
+  document.getElementById('roomInput').value='3';
+  document.getElementById('areaRange').value=1000;
+  document.getElementById('next1').disabled=true;
+  document.getElementById('liveEst').textContent='Select a service to begin';
+  document.getElementById('selSummary').style.display='none';
+}
+
+function prefillContact(){
+  const sel = document.getElementById('contact').querySelector('select');
+  if(sel && calcState.serviceName){
+    const opts = [...sel.options];
+    const match = opts.find(o => o.text.toLowerCase().includes(calcState.service));
+    if(match) sel.value = match.value;
+  }
+}
+
+function printEstimate(){
+  const content = `
+    <html><head><title>CS Interio — Cost Estimate</title>
+    <style>body{font-family:Georgia,serif;padding:2rem;color:#222;max-width:600px;margin:0 auto;}
+    h1{font-size:1.8rem;margin-bottom:.3rem;} .gold{color:#c9a84c;}
+    table{width:100%;border-collapse:collapse;margin:1.5rem 0;}
+    td{padding:.6rem .8rem;border-bottom:1px solid #eee;font-size:.9rem;}
+    td:last-child{text-align:right;font-weight:600;}
+    .total{font-size:1.4rem;font-weight:700;color:#c9a84c;}
+    .note{font-size:.78rem;color:#888;border-top:2px solid #c9a84c;padding-top:1rem;margin-top:1rem;}
+    </style></head><body>
+    <h1>CS <span class="gold">Interio</span></h1>
+    <p style="color:#888;font-size:.85rem;">Cost Estimate Report — ${new Date().toLocaleDateString('en-IN',{day:'numeric',month:'long',year:'numeric'})}</p>
+    <hr style="border-color:#c9a84c;margin:1rem 0;">
+    <h2 style="font-size:1.1rem;margin-bottom:1rem;">Project: ${calcState.serviceName} — ${calcState.qualityName} Finish</h2>
+    <table>
+      <tr><td>Service Type</td><td>${calcState.serviceName}</td></tr>
+      ${!calcState.isKitchen ? `<tr><td>Area</td><td>${calcState.area} sq.ft</td></tr>` : ''}
+      <tr><td>Quality Tier</td><td>${calcState.qualityName}</td></tr>
+      ${calcState.addons.map(a=>`<tr><td>${a.name}</td><td>Included</td></tr>`).join('')}
+      <tr><td colspan="2" style="padding:.3rem;"></td></tr>
+      <tr><td><strong>Estimated Total Range</strong></td><td class="total">${formatINR(calcState.minEst)} – ${formatINR(calcState.maxEst)}</td></tr>
+    </table>
+    <div class="note">This is a preliminary estimate. Final pricing subject to site survey and material selection. Contact CS Interio for a detailed quote.<br><br>📞 +91 98765 43210 | ✉ hello@csinterio.com | 🌐 www.csinterio.com</div>
+    </body></html>`;
+  const w = window.open('','_blank');
+  w.document.write(content);
+  w.document.close();
+  w.print();
+}
+
+
+/* ══════════════════════════════
+   WHATSAPP WIDGET JS
+══════════════════════════════ */
+const WA_NUMBER = '919553774933';
+const waBanner = document.getElementById('waBanner');
+const waMainBtn = document.getElementById('waMainBtn');
+let bannerClosed = false;
+
+// Show banner after 3 seconds on page load
+setTimeout(() => {
+  if (!bannerClosed) waBanner.classList.add('show');
+}, 3000);
+
+// Auto-hide banner after 13 seconds total
+setTimeout(() => {
+  if (!bannerClosed) waBanner.classList.remove('show');
+}, 13000);
+
+function closeBanner() {
+  bannerClosed = true;
+  waBanner.classList.remove('show');
+}
+
+// Re-show banner on hover over WhatsApp button
+waMainBtn.addEventListener('mouseenter', () => {
+  if (bannerClosed) return;
+  waBanner.classList.add('show');
+});
+document.getElementById('waFloat').addEventListener('mouseleave', () => {
+  if (bannerClosed) return;
+  waBanner.classList.remove('show');
+});
+
+// WhatsApp form message builder
+function sendWhatsApp() {
+  const inputs = document.querySelectorAll('.cform input[type="text"]');
+  const fname = inputs[0]?.value?.trim() || '';
+  const lname = inputs[1]?.value?.trim() || '';
+  const phone = document.querySelector('.cform input[type="tel"]')?.value?.trim() || '';
+  const selects = document.querySelectorAll('.cform select');
+  const service = selects[0]?.value || '';
+  const budget  = selects[1]?.value || '';
+  const vision  = document.getElementById('visionField')?.value?.trim() || '';
+
+  let msg = `Hello CS Interio! 👋\n`;
+  msg += `━━━━━━━━━━━━━━━━━━\n`;
+  if (fname || lname) msg += `👤 *Name:* ${fname} ${lname}\n`;
+  if (phone)          msg += `📞 *Phone:* ${phone}\n`;
+  if (service)        msg += `🏠 *Service:* ${service}\n`;
+  if (budget)         msg += `💰 *Budget:* ${budget}\n`;
+  if (vision)         msg += `✨ *Vision:* ${vision}\n`;
+  msg += `━━━━━━━━━━━━━━━━━━\n`;
+  msg += `I'd love to discuss my interior design project. Please get in touch!`;
+
+  const encoded = encodeURIComponent(msg);
+  window.open(`https://wa.me/${WA_NUMBER}?text=${encoded}`, '_blank', 'noopener');
+}
+
+function submitForm(e){
+  e.preventDefault();
+  const txt = document.getElementById('sbtnText');
+  const btn = txt.parentElement;
+  txt.textContent = '✓ Enquiry Sent!';
+  btn.style.borderColor = '#4caf50';
+  btn.style.color = '#4caf50';
+  setTimeout(()=>{
+    txt.textContent = 'Send Enquiry →';
+    btn.style.borderColor = '';
+    btn.style.color = '';
+  }, 4000);
+}
+</script>
+</body>
+</html>
